@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Journal">
+<title>Journal Spasmes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#fff;--card:#f7f7f7;--border:#e8e8e8;--border2:#d0d0d0;
+  --text:#111;--mid:#555;--faint:#999;
+  --accent:#b07d30;--accent-l:#f5ead8;
+  --red:#d63031;--green:#00864a;--purple:#6c3483;--blue:#1a5276;--teal:#0e6655;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'Lora',serif;max-width:480px;margin:0 auto;min-height:100vh;}
+button{font-family:inherit;cursor:pointer;}
+
+.hdr{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);padding:18px 20px 0;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.hdr-title{font-size:19px;font-weight:600;}
+.hdr-title em{font-family:'DM Mono',monospace;font-size:10px;font-style:normal;color:var(--accent);letter-spacing:3px;}
+#save-st{font-family:'DM Mono',monospace;font-size:9px;color:var(--green);}
+.tabs{display:flex;}
+.tab{padding:9px 16px;font-size:12px;font-family:'DM Mono',monospace;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--faint);transition:all .15s;}
+.tab.on{border-bottom-color:var(--accent);color:var(--accent);}
+
+.dstrip{display:flex;gap:8px;padding:12px 20px;overflow-x:auto;border-bottom:1px solid var(--border);scrollbar-width:none;}
+.dstrip::-webkit-scrollbar{display:none;}
+.dbtn{min-width:46px;height:54px;border-radius:11px;flex-shrink:0;border:2px solid var(--border);background:var(--card);color:var(--mid);font-family:'DM Mono',monospace;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:all .12s;}
+.dbtn.on{border-color:var(--accent);background:var(--accent);color:#fff;}
+.dbtn .dn{font-size:16px;font-weight:700;}
+.dbtn .dw{font-size:9px;}
+.ddot{width:4px;height:4px;border-radius:50%;background:var(--accent);}
+.dbtn.on .ddot{background:#fff;}
+
+.content{padding:6px 20px 120px;}
+.view{display:none;}.view.on{display:block;}
+
+.div{display:flex;align-items:center;gap:8px;margin:26px 0 14px;}
+.div-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;}
+.div-line{flex:1;height:1px;background:var(--border);}
+
+.slbl{font-size:13px;color:var(--mid);margin-bottom:8px;}
+.sbtns{display:flex;gap:7px;}
+.sbtn{width:42px;height:42px;border-radius:10px;border:2px solid var(--border);background:var(--bg);color:var(--faint);font-family:'DM Mono',monospace;font-size:17px;font-weight:700;transition:all .12s;flex-shrink:0;}
+.sbtn.on{color:#fff;}
+
+.tbtns{display:flex;gap:7px;flex-wrap:wrap;}
+.tbtn{padding:8px 13px;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--mid);font-family:'DM Mono',monospace;font-size:12px;font-weight:600;transition:all .12s;}
+.tbtn.on{color:#fff;}
+
+input,textarea{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Lora',serif;font-size:13px;padding:9px 12px;width:100%;outline:none;}
+input::placeholder,textarea::placeholder{color:var(--faint);}
+textarea{resize:vertical;}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
+.ctitle{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;margin-bottom:12px;}
+.r2{display:flex;gap:8px;margin-bottom:10px;}
+.r2:last-child{margin-bottom:0;}
+.f1{flex:1;}
+.sublbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase;}
+.mlbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;margin:18px 0 10px;text-transform:uppercase;}
+
+.exrow{display:flex;align-items:center;gap:12px;width:100%;padding:11px 14px;margin-bottom:7px;background:var(--card);border:1px solid var(--border);border-radius:11px;text-align:left;transition:all .12s;}
+.exrow.on{background:#edfbf3;border-color:var(--green);}
+.excheck{width:24px;height:24px;border-radius:6px;flex-shrink:0;background:transparent;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.exrow.on .excheck{background:var(--green);border-color:var(--green);}
+.exmark{color:#fff;font-size:14px;font-weight:800;display:none;}
+.exrow.on .exmark{display:block;}
+.exlbl{font-size:14px;color:var(--mid);}
+.exrow.on .exlbl{color:var(--green);}
+
+.scard{background:#f0faf8;border:1px solid rgba(14,102,85,.2);border-radius:12px;padding:14px;margin-top:10px;}
+.imp-res{margin-top:12px;padding:10px 14px;border-radius:10px;font-family:'DM Mono',monospace;font-size:12px;}
+
+.hcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;}
+.htop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.hdate{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:1px;}
+.hscore{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-weight:700;font-size:15px;color:#fff;}
+.badges{display:flex;gap:7px;flex-wrap:wrap;}
+.badge{border-radius:6px;padding:4px 9px;font-size:11px;font-family:'DM Mono',monospace;}
+.hnotes{margin-top:9px;font-size:12px;color:var(--faint);font-style:italic;}
+
+.expbtn{position:fixed;bottom:24px;right:20px;background:var(--accent);color:#fff;border:none;border-radius:50px;padding:13px 22px;font-family:'DM Mono',monospace;font-size:12px;font-weight:600;box-shadow:0 4px 16px rgba(176,125,48,.4);z-index:100;transition:transform .1s;}
+.expbtn:active{transform:scale(.96);}
+
+.mb16{margin-bottom:16px;}
+.mb14{margin-bottom:14px;}
+.mb10{margin-bottom:10px;}
+.mb8{margin-bottom:8px;}
+.mb6{margin-bottom:6px;}
+.gap8{gap:8px;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="hdr-title">Journal <em>SPASMES</em></div>
+    <span id="save-st">✓ sauvegardé</span>
+  </div>
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('form')">Saisie</button>
+    <button class="tab" onclick="switchTab('history')">Historique</button>
+  </div>
+</div>
+
+<div class="dstrip" id="dstrip"></div>
+<div class="content">
+  <div class="view on" id="form-view"></div>
+  <div class="view" id="history-view"></div>
+</div>
+
+<button class="expbtn" onclick="exportJSON()">⬇ Exporter JSON</button>
+
+<script>
+const SK = 'journal_spasmes_MASTER';
+const EM = [
+  {id:'trapeze',label:'Étirement trapèze',m:'matin'},
+  {id:'scm',label:'Étirement SCM',m:'matin'},
+  {id:'extension_nuque',label:'Extension de nuque',m:'matin'},
+  {id:'pectoral_mineur',label:'Pectoral mineur',m:'matin'},
+  {id:'cercles_scapulaires',label:'Cercles scapulaires',m:'matin'},
+  {id:'prise_conscience',label:'Relâchement épaules (alarme horaire)',m:'journee'},
+  {id:'chin_tucks',label:'Chin tucks',m:'journee'},
+  {id:'retraction_omoplates',label:'Rétraction omoplates',m:'soir'},
+  {id:'ytw',label:'Y-T-W',m:'soir'},
+  {id:'face_pulls',label:'Face pulls',m:'soir'},
+  {id:'respiration_diaphragmatique',label:'Respiration diaphragmatique',m:'soir'},
+  {id:'chaleur',label:'Chaleur locale (trapèze gauche)',m:'soir'},
+  {id:'automassage',label:'Automassage balle de tennis',m:'soir'},
+];
+const HIST = [
+  {date:"2026-03-13",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:""},sport:{marche:{duree:"25",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Orale",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"2",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h08",sommeil_profond:"54min (92)",magnesium:"Non",hydratation:"1,2L",humeur:"Neutre",notes:"Télétravail 2h assis"},
+  {date:"2026-03-14",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:true,moment:"Fin de journée",facteurs:"Allongement sur côté gauche bras tendu"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h51",sommeil_profond:"35min (92)",magnesium:"Non",hydratation:"80cl",humeur:"Bonne",notes:"Conduite voiture 2h"},
+  {date:"2026-03-15",spasmes:{intensite:2,frequence:2,gene:2},allegement:{oui:true,moment:"Matinée",facteurs:"Allongé sur côté gauche bras tendu"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"30",intensite:"L",avant:"2",apres:"4",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:3,bienetre:2},sommeil_duree:"7h20",sommeil_profond:"50min (94)",magnesium:"Non",hydratation:"1L40",humeur:"Bonne",notes:"Les spasmes amplifiés pendant la course"},
+  {date:"2026-03-16",spasmes:{intensite:3,frequence:4,gene:4},allegement:{oui:true,moment:"4→2",facteurs:"Sieste 15 min"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:3,energie:5,stress:2,bienetre:3},sommeil_duree:"6h35",sommeil_profond:"1h04 (80/100)",magnesium:"2 gélules",hydratation:"1,5L",humeur:"Bonne",notes:"Respiration profonde 25 min. Nuit difficile cauchemars, réveils pipi"},
+  {date:"2026-03-17",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:""},sport:{marche:{duree:"30",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"4",wellness:{sommeil_qualite:4,energie:5,stress:2,bienetre:3},sommeil_duree:"7h24",sommeil_profond:"46min (87/100)",magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:"Travail assis devant PC 4h"},
+  {date:"2026-03-18",spasmes:{intensite:3,frequence:4,gene:3},allegement:{oui:true,moment:"4→3",facteurs:"Sieste"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"40",intensite:"L",avant:"",apres:"Pas de spasme pendant course",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:["ytw"],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:4,energie:5,stress:1,bienetre:3},sommeil_duree:"7h",sommeil_profond:"",magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:""},
+];
+
+// ── State ──
+let entries = {};
+let activeDate = today();
+let activeTab = 'form';
+
+function today(){return new Date().toISOString().split('T')[0];}
+function frDate(s){return new Date(s+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});}
+function norm(e){
+  if(!e.social)e.social={oui:null,duree:'',qualite:null,avant:null,apres:null};
+  if(e.heures_assis===undefined)e.heures_assis='';
+  if(!e.exercices)e.exercices=[];
+  return e;
+}
+function emptyEntry(date){
+  return{date,spasmes:{intensite:null,frequence:null,gene:null},allegement:{oui:null,moment:'',facteurs:''},
+    sport:{marche:{duree:'',intensite:'',avant:'',apres:''},jogging:{duree:'',intensite:'',avant:'',apres:'',delai:''}},
+    posture:{trapeze:null,nuque:null,machoire:null,pommette:null},
+    langue:'',respiration:'',exercices:[],social:{oui:null,duree:'',qualite:null,avant:null,apres:null},heures_assis:'',
+    wellness:{sommeil_qualite:null,energie:null,stress:null,bienetre:null},
+    sommeil_duree:'',sommeil_profond:'',magnesium:'',hydratation:'',humeur:'',notes:''};
+}
+
+// ── Storage ──
+function load(){
+  try{
+    const raw=localStorage.getItem(SK);
+    if(raw){
+      const saved=JSON.parse(raw);
+      // Base = historique
+      HIST.forEach(h=>{entries[h.date]=norm({...h});});
+      // Saved ÉCRASE toujours
+      Object.keys(saved).forEach(d=>{entries[d]=norm(saved[d]);});
+    } else {
+      HIST.forEach(h=>{entries[h.date]=norm({...h});});
+    }
+  }catch{HIST.forEach(h=>{entries[h.date]=norm({...h});});}
+}
+function save(){
+  try{
+    localStorage.setItem(SK,JSON.stringify(entries));
+    const st=document.getElementById('save-st');
+    st.textContent='✓ sauvegardé';st.style.color='var(--green)';
+  }catch{
+    const st=document.getElementById('save-st');
+    st.textContent='⚠ erreur';st.style.color='var(--red)';
+  }
+}
+function setVal(path,val){
+  const e=JSON.parse(JSON.stringify(entries[activeDate]||emptyEntry(activeDate)));
+  const p=path.split('.');let o=e;
+  for(let i=0;i<p.length-1;i++)o=o[p[i]];
+  o[p[p.length-1]]=val;
+  entries[activeDate]=e;
+  save();
+  renderForm();
+}
+function togEx(id){
+  const e=JSON.parse(JSON.stringify(entries[activeDate]||emptyEntry(activeDate)));
+  if(!e.exercices)e.exercices=[];
+  const i=e.exercices.indexOf(id);
+  if(i>=0)e.exercices.splice(i,1);else e.exercices.push(id);
+  entries[activeDate]=e;save();renderForm();
+}
+
+// ── Export ──
+function exportJSON(){
+  const data=JSON.stringify(entries,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='journal_spasmes_'+today()+'.json';
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+// ── Score color ──
+function sc(v){return v<=2?'var(--green)':v<=3?'#e67e22':'var(--red)';}
+function avg(e){
+  const v=[e.spasmes.intensite,e.spasmes.frequence,e.spasmes.gene].filter(Boolean);
+  return v.length?(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1):null;
+}
+function assisC(h){const n=parseFloat(h);return isNaN(n)?'var(--faint)':n<=2?'var(--green)':n<=5?'#e67e22':'var(--red)';}
+function assisBg(h){const n=parseFloat(h);return isNaN(n)?'':n<=2?'#edfbf3':n<=5?'#fef9ec':'#fdf0f0';}
+
+// ── UI helpers ──
+function scoreButtons(vals,current,path,color){
+  return vals.map(v=>{
+    const on=current===v;
+    return `<button class="sbtn${on?' on':''}" style="${on?'background:'+color+';border-color:'+color:''}" onclick="setVal('${path}',${current===v?'null':v})">${v}</button>`;
+  }).join('');
+}
+function toggleButtons(opts,current,path,color){
+  return opts.map(o=>{
+    const on=current===o;
+    return `<button class="tbtn${on?' on':''}" style="${on?'background:'+color+';border-color:'+color:''}" onclick="setVal('${path}','${current===o?'':o}')">${o}</button>`;
+  }).join('');
+}
+function exRows(list,exercices){
+  return list.map(ex=>{
+    const on=exercices&&exercices.includes(ex.id);
+    return `<button class="exrow${on?' on':''}" onclick="togEx('${ex.id}')"><div class="excheck"><span class="exmark">✓</span></div><span class="exlbl">${ex.label}</span></button>`;
+  }).join('');
+}
+
+// ── Tab switch ──
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',[tab==='form',tab==='history'][i]));
+  document.getElementById('form-view').classList.toggle('on',tab==='form');
+  document.getElementById('history-view').classList.toggle('on',tab==='history');
+  document.getElementById('dstrip').style.display=tab==='form'?'flex':'none';
+  if(tab==='history')renderHistory();
+}
+
+// ── Date strip ──
+function renderDateStrip(){
+  const strip=document.getElementById('dstrip');
+  let html='';
+  for(let i=0;i<7;i++){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const s=d.toISOString().split('T')[0];
+    const on=s===activeDate;
+    const hasData=!!(entries[s]&&entries[s].spasmes&&entries[s].spasmes.intensite);
+    html+=`<button class="dbtn${on?' on':''}" onclick="selectDate('${s}')">
+      <span class="dn">${d.getDate()}</span>
+      <span class="dw">${d.toLocaleDateString('fr-FR',{weekday:'short'}).toUpperCase()}</span>
+      ${hasData?`<div class="ddot"></div>`:''}
+    </button>`;
+  }
+  strip.innerHTML=html;
+}
+function selectDate(d){activeDate=d;renderDateStrip();renderForm();}
+
+// ── Form render ──
+function renderForm(){
+  const e=entries[activeDate]||emptyEntry(activeDate);
+  const s=e.social||{oui:null,duree:'',qualite:null,avant:null,apres:null};
+  
+  let html=`
+  <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--border2);letter-spacing:1px;margin:12px 0 4px">${frDate(activeDate).toUpperCase()}</div>
+
+  <div class="div"><span class="div-lbl" style="color:var(--red)">⚡ Spasmes</span><div class="div-line"></div></div>
+  ${['intensite:Intensité','frequence:Fréquence','gene:Gêne fonctionnelle'].map(f=>{
+    const[k,lbl]=f.split(':');
+    return `<div class="mb16"><div class="slbl">${lbl}</div><div class="sbtns">${scoreButtons([1,2,3,4,5],e.spasmes[k],'spasmes.'+k,'var(--red)')}</div></div>`;
+  }).join('')}
+  
+  <div class="mb10">
+    <div class="slbl">Allégement</div>
+    <div class="tbtns mb10">
+      <button class="tbtn${e.allegement.oui===true?' on':''}" style="${e.allegement.oui===true?'background:var(--green);border-color:var(--green)':''}" onclick="setVal('allegement.oui',${e.allegement.oui===true?'null':'true'})">Oui ✓</button>
+      <button class="tbtn${e.allegement.oui===false?' on':''}" style="${e.allegement.oui===false?'background:var(--red);border-color:var(--red)':''}" onclick="setVal('allegement.oui',${e.allegement.oui===false?'null':'false'})">Non</button>
+    </div>
+    ${e.allegement.oui?`<div style="display:flex;flex-direction:column;gap:8px">
+      <input class="" placeholder="Moment" value="${e.allegement.moment||''}" oninput="setVal('allegement.moment',this.value)">
+      <input placeholder="Facteurs suspectés" value="${e.allegement.facteurs||''}" oninput="setVal('allegement.facteurs',this.value)">
+    </div>`:''}
+  </div>
+
+  <div class="div"><span class="div-lbl" style="color:var(--green)">🏃 Sport</span><div class="div-line"></div></div>
+  <div class="card">
+    <div class="ctitle">🚶 MARCHE</div>
+    <div class="r2"><div class="f1"><input placeholder="Durée (min)" value="${e.sport.marche.duree||''}" oninput="setVal('sport.marche.duree',this.value)"></div>
+    <div class="tbtns">${['L','M','I'].map(i=>`<button class="tbtn${e.sport.marche.intensite===i?' on':''}" style="${e.sport.marche.intensite===i?'background:var(--accent);border-color:var(--accent)':''}" onclick="setVal('sport.marche.intensite','${e.sport.marche.intensite===i?'':i}')">${i}</button>`).join('')}</div></div>
+    <div class="r2"><div class="f1"><input placeholder="Avant /5" value="${e.sport.marche.avant||''}" oninput="setVal('sport.marche.avant',this.value)"></div><div class="f1"><input placeholder="Après /5" value="${e.sport.marche.apres||''}" oninput="setVal('sport.marche.apres',this.value)"></div></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">🏃 JOGGING</div>
+    <div class="r2"><div class="f1"><input placeholder="Durée (min)" value="${e.sport.jogging.duree||''}" oninput="setVal('sport.jogging.duree',this.value)"></div>
+    <div class="tbtns">${['L','M','I'].map(i=>`<button class="tbtn${e.sport.jogging.intensite===i?' on':''}" style="${e.sport.jogging.intensite===i?'background:var(--accent);border-color:var(--accent)':''}" onclick="setVal('sport.jogging.intensite','${e.sport.jogging.intensite===i?'':i}')">${i}</button>`).join('')}</div></div>
+    <div class="r2"><div class="f1"><input placeholder="Avant /5" value="${e.sport.jogging.avant||''}" oninput="setVal('sport.jogging.avant',this.value)"></div><div class="f1"><input placeholder="Après /5" value="${e.sport.jogging.apres||''}" oninput="setVal('sport.jogging.apres',this.value)"></div></div>
+    <input placeholder="Délai soulagement (min)" value="${e.sport.jogging.delai||''}" oninput="setVal('sport.jogging.delai',this.value)">
+  </div>
+
+  <div class="div"><span class="div-lbl" style="color:var(--purple)">🦴 Posture & Tension</span><div class="div-line"></div></div>
+  ${['trapeze:Trapèze gauche','nuque:Nuque / cou gauche','machoire:Mâchoire gauche','pommette:Pommette gauche'].map(f=>{
+    const[k,lbl]=f.split(':');
+    return `<div class="mb16"><div class="slbl">${lbl}</div><div class="sbtns">${scoreButtons([1,2,3,4,5],e.posture[k],'posture.'+k,'var(--purple)')}</div></div>`;
+  }).join('')}
+  <div class="mb14"><div class="slbl">Langue au palais</div><div class="tbtns">${toggleButtons(['Oui','Non','Mixte'],e.langue,'langue','var(--purple)')}</div></div>
+  <div class="mb10"><div class="slbl">Respiration</div><div class="tbtns">${toggleButtons(['Nasale','Orale','Mixte'],e.respiration,'respiration','var(--blue)')}</div></div>
+
+  <div class="div"><span class="div-lbl" style="color:#7f8c8d">🪑 Sédentarité</span><div class="div-line"></div></div>
+  <div class="card">
+    <div class="slbl" style="margin-bottom:10px">Heures assis au bureau</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="f1"><input placeholder="ex: 3, 5.5, 8" value="${e.heures_assis||''}" oninput="setVal('heures_assis',this.value)"></div>
+      ${e.heures_assis&&!isNaN(parseFloat(e.heures_assis))?`<div style="padding:8px 14px;border-radius:8px;font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:${assisC(e.heures_assis)};background:${assisBg(e.heures_assis)};white-space:nowrap">${parseFloat(e.heures_assis)}h ${parseFloat(e.heures_assis)<=2?'✓':parseFloat(e.heures_assis)<=5?'⚠':'⚠⚠'}</div>`:''}
+    </div>
+  </div>
+
+  <div class="div"><span class="div-lbl" style="color:var(--blue)">💪 Exercices du jour</span><div class="div-line"></div></div>
+  <div class="mlbl" style="color:var(--accent)">🌅 MATIN</div>
+  ${exRows(EM.filter(x=>x.m==='matin'),e.exercices)}
+  <div class="mlbl" style="color:var(--blue)">💼 JOURNÉE</div>
+  ${exRows(EM.filter(x=>x.m==='journee'),e.exercices)}
+  <div class="mlbl" style="color:var(--purple)">🌙 SOIR</div>
+  ${exRows(EM.filter(x=>x.m==='soir'),e.exercices)}
+
+  <div class="div"><span class="div-lbl" style="color:var(--teal)">👥 Contact amis</span><div class="div-line"></div></div>
+  <div class="mb14">
+    <div class="slbl">Contact aujourd'hui ?</div>
+    <div class="tbtns">
+      <button class="tbtn${s.oui===true?' on':''}" style="${s.oui===true?'background:var(--teal);border-color:var(--teal)':''}" onclick="setVal('social.oui',${s.oui===true?'null':'true'})">Oui ✓</button>
+      <button class="tbtn${s.oui===false?' on':''}" style="${s.oui===false?'background:var(--mid);border-color:var(--mid)':''}" onclick="setVal('social.oui',${s.oui===false?'null':'false'})">Non</button>
+    </div>
+  </div>
+  ${s.oui===true?`<div class="scard">
+    <div class="mb14"><div class="slbl">Durée</div><input placeholder="ex: 1h, 30min" value="${s.duree||''}" oninput="setVal('social.duree',this.value)"></div>
+    <div class="mb14"><div class="slbl">Qualité de l'interaction</div><div class="sbtns">${scoreButtons([1,2,3,4,5],s.qualite,'social.qualite','var(--teal)')}</div></div>
+    <div class="slbl">Impact sur les spasmes</div>
+    <div style="display:flex;gap:12px">
+      <div class="f1"><div class="sublbl">AVANT</div><div class="sbtns" style="flex-wrap:wrap">${scoreButtons([1,2,3,4,5],s.avant,'social.avant','var(--red)')}</div></div>
+      <div class="f1"><div class="sublbl">APRÈS</div><div class="sbtns" style="flex-wrap:wrap">${scoreButtons([1,2,3,4,5],s.apres,'social.apres','var(--red)')}</div></div>
+    </div>
+    ${s.avant!=null&&s.apres!=null?`<div class="imp-res" style="background:${s.apres<s.avant?'#edfbf3':s.apres>s.avant?'#fdf0f0':'#f5f5f5'};border:1px solid ${s.apres<s.avant?'var(--green)':s.apres>s.avant?'var(--red)':'var(--border)'}">
+      <span style="color:${s.apres<s.avant?'var(--green)':s.apres>s.avant?'var(--red)':'var(--mid)'}">${s.apres<s.avant?'↓ amélioration de '+(s.avant-s.apres)+' point'+(s.avant-s.apres>1?'s':''):s.apres>s.avant?'↑ aggravation de '+(s.apres-s.avant)+' point'+(s.apres-s.avant>1?'s':''):'→ pas de changement'}</span>
+    </div>`:''}
+  </div>`:''}
+
+  <div class="div"><span class="div-lbl" style="color:var(--green)">🌿 Wellness</span><div class="div-line"></div></div>
+  ${[['sommeil_qualite','Qualité sommeil','var(--green)'],['energie','Énergie','var(--green)'],['stress','Stress','var(--red)'],['bienetre','Bien-être global','var(--green)']].map(([k,lbl,col])=>`
+    <div class="mb16"><div class="slbl">${lbl}</div><div class="sbtns">${scoreButtons([1,2,3,4,5],e.wellness[k],'wellness.'+k,col)}</div></div>
+  `).join('')}
+  <div class="r2 mb10"><div class="f1"><input placeholder="Durée sommeil (7h30)" value="${e.sommeil_duree||''}" oninput="setVal('sommeil_duree',this.value)"></div><div class="f1"><input placeholder="Sommeil profond" value="${e.sommeil_profond||''}" oninput="setVal('sommeil_profond',this.value)"></div></div>
+  <div class="r2 mb14"><div class="f1"><input placeholder="Hydratation (litres)" value="${e.hydratation||''}" oninput="setVal('hydratation',this.value)"></div><div class="f1"><input placeholder="Magnésium" value="${e.magnesium||''}" oninput="setVal('magnesium',this.value)"></div></div>
+  <div class="mb10"><div class="slbl">Humeur</div><div class="tbtns">${toggleButtons(['Bonne','Neutre','Difficile'],e.humeur,'humeur','var(--accent)')}</div></div>
+
+  <div class="div"><span class="div-lbl" style="color:var(--faint)">📝 Notes libres</span><div class="div-line"></div></div>
+  <textarea rows="4" placeholder="Notes du jour..." oninput="setVal('notes',this.value)">${e.notes||''}</textarea>
+  `;
+
+  document.getElementById('form-view').innerHTML=html;
+}
+
+// ── History render ──
+function renderHistory(){
+  const dates=Object.keys(entries).sort((a,b)=>b.localeCompare(a));
+  let html='<div style="padding-top:16px">';
+  dates.forEach(date=>{
+    const e=entries[date];
+    const a=avg(e);if(!a)return;
+    const mat=EM.filter(x=>x.m==='matin'&&e.exercices&&e.exercices.includes(x.id)).length;
+    const soir=EM.filter(x=>x.m==='soir'&&e.exercices&&e.exercices.includes(x.id)).length;
+    const soc=e.social||{};
+    const si=soc.oui&&soc.avant!=null&&soc.apres!=null?soc.apres-soc.avant:null;
+    html+=`<div class="hcard" onclick="selectDate('${date}');switchTab('form')">
+      <div class="htop">
+        <div class="hdate">${frDate(date).toUpperCase()}</div>
+        <div class="hscore" style="background:${sc(parseFloat(a))}">${a}</div>
+      </div>
+      <div class="badges">
+        ${e.sport&&e.sport.jogging&&e.sport.jogging.duree?`<span class="badge" style="background:#edfbf3;color:var(--green)">🏃 ${e.sport.jogging.duree}min</span>`:''}
+        ${e.sport&&e.sport.marche&&e.sport.marche.duree?`<span class="badge" style="background:#edfbf3;color:var(--green)">🚶 ${e.sport.marche.duree}min</span>`:''}
+        ${e.heures_assis?`<span class="badge" style="background:${assisBg(e.heures_assis)};color:${assisC(e.heures_assis)}">🪑 ${e.heures_assis}h</span>`:''}
+        ${mat>0?`<span class="badge" style="background:var(--accent-l);color:var(--accent)">🌅 ${mat}/${EM.filter(x=>x.m==='matin').length}</span>`:''}
+        ${soir>0?`<span class="badge" style="background:#f3eefb;color:var(--purple)">🌙 ${soir}/${EM.filter(x=>x.m==='soir').length}</span>`:''}
+        ${soc.oui?`<span class="badge" style="background:#f0faf8;color:var(--teal)">👥${soc.duree?' '+soc.duree:''}${soc.qualite?' · '+soc.qualite+'/5':''}${si!==null?(si<0?' ↓'+Math.abs(si):si>0?' ↑'+si:' →'):''}</span>`:''}
+        ${e.allegement&&e.allegement.oui?`<span class="badge" style="background:#edfbf3;color:var(--green)">✓ allégement</span>`:''}
+        ${e.wellness&&e.wellness.stress!=null?`<span class="badge" style="background:${e.wellness.stress<=2?'#edfbf3':'#fdf0f0'};color:${e.wellness.stress<=2?'var(--green)':'var(--red)'}">stress ${e.wellness.stress}/5</span>`:''}
+      </div>
+      ${e.notes?`<div class="hnotes">${e.notes}</div>`:''}
+    </div>`;
+  });
+  html+='</div>';
+  document.getElementById('history-view').innerHTML=html;
+}
+
+// ── Init ──
+load();
+renderDateStrip();
+renderForm();
+document.getElementById('dstrip').style.display='flex';
+</script>
+</body>
+</html>
