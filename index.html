@@ -197,7 +197,6 @@ function setVal(path,val){
   o[p[p.length-1]]=val;
   entries[activeDate]=e;
   save();
-  renderForm();
 }
 function togEx(id){
   const e=JSON.parse(JSON.stringify(entries[activeDate]||emptyEntry(activeDate)));
