@@ -94,6 +94,12 @@ textarea{resize:vertical;}
 .mb8{margin-bottom:8px;}
 .mb6{margin-bottom:6px;}
 .gap8{gap:8px;}
+
+/* Score 0-5: wider buttons when 6 items */
+.sbtns.wide .sbtn{width:38px;height:38px;font-size:15px;}
+/* Score 0-10 */
+.sbtns.score10{flex-wrap:wrap;}
+.sbtns.score10 .sbtn{width:38px;height:38px;font-size:14px;}
 </style>
 </head>
 <body>
@@ -135,12 +141,12 @@ const EM = [
   {id:'automassage',label:'Automassage balle de tennis',m:'soir'},
 ];
 const HIST = [
-  {date:"2026-03-13",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:""},sport:{marche:{duree:"25",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Orale",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"2",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h08",sommeil_profond:"54min (92)",magnesium:"Non",hydratation:"1,2L",humeur:"Neutre",notes:"Télétravail 2h assis"},
-  {date:"2026-03-14",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:true,moment:"Fin de journée",facteurs:"Allongement sur côté gauche bras tendu"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h51",sommeil_profond:"35min (92)",magnesium:"Non",hydratation:"80cl",humeur:"Bonne",notes:"Conduite voiture 2h"},
-  {date:"2026-03-15",spasmes:{intensite:2,frequence:2,gene:2},allegement:{oui:true,moment:"Matinée",facteurs:"Allongé sur côté gauche bras tendu"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"30",intensite:"L",avant:"2",apres:"4",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:3,bienetre:2},sommeil_duree:"7h20",sommeil_profond:"50min (94)",magnesium:"Non",hydratation:"1L40",humeur:"Bonne",notes:"Les spasmes amplifiés pendant la course"},
-  {date:"2026-03-16",spasmes:{intensite:3,frequence:4,gene:4},allegement:{oui:true,moment:"4→2",facteurs:"Sieste 15 min"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:3,energie:5,stress:2,bienetre:3},sommeil_duree:"6h35",sommeil_profond:"1h04 (80/100)",magnesium:"2 gélules",hydratation:"1,5L",humeur:"Bonne",notes:"Respiration profonde 25 min. Nuit difficile cauchemars, réveils pipi"},
-  {date:"2026-03-17",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:""},sport:{marche:{duree:"30",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"4",wellness:{sommeil_qualite:4,energie:5,stress:2,bienetre:3},sommeil_duree:"7h24",sommeil_profond:"46min (87/100)",magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:"Travail assis devant PC 4h"},
-  {date:"2026-03-18",spasmes:{intensite:3,frequence:4,gene:3},allegement:{oui:true,moment:"4→3",facteurs:"Sieste"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"40",intensite:"L",avant:"",apres:"Pas de spasme pendant course",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:["ytw"],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:4,energie:5,stress:1,bienetre:3},sommeil_duree:"7h",sommeil_profond:"",magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:""},
+  {date:"2026-03-13",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:""},sport:{marche:{duree:"25",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Orale",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"2",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h08",sommeil_profond:"54min (92)",sommeil_score:null,magnesium:"Non",hydratation:"1,2L",humeur:"Neutre",notes:"Télétravail 2h assis"},
+  {date:"2026-03-14",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:true,moment:"Fin de journée",facteurs:"Allongement sur côté gauche bras tendu"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h51",sommeil_profond:"35min (92)",sommeil_score:null,magnesium:"Non",hydratation:"80cl",humeur:"Bonne",notes:"Conduite voiture 2h"},
+  {date:"2026-03-15",spasmes:{intensite:2,frequence:2,gene:2},allegement:{oui:true,moment:"Matinée",facteurs:"Allongé sur côté gauche bras tendu"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"30",intensite:"L",avant:"2",apres:"4",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:3,bienetre:2},sommeil_duree:"7h20",sommeil_profond:"50min (94)",sommeil_score:null,magnesium:"Non",hydratation:"1L40",humeur:"Bonne",notes:"Les spasmes amplifiés pendant la course"},
+  {date:"2026-03-16",spasmes:{intensite:3,frequence:4,gene:4},allegement:{oui:true,moment:"4→2",facteurs:"Sieste 15 min"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:3,energie:5,stress:2,bienetre:3},sommeil_duree:"6h35",sommeil_profond:"1h04 (80/100)",sommeil_score:null,magnesium:"2 gélules",hydratation:"1,5L",humeur:"Bonne",notes:"Respiration profonde 25 min. Nuit difficile cauchemars, réveils pipi"},
+  {date:"2026-03-17",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:""},sport:{marche:{duree:"30",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"4",wellness:{sommeil_qualite:4,energie:5,stress:2,bienetre:3},sommeil_duree:"7h24",sommeil_profond:"46min (87/100)",sommeil_score:null,magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:"Travail assis devant PC 4h"},
+  {date:"2026-03-18",spasmes:{intensite:3,frequence:4,gene:3},allegement:{oui:true,moment:"4→3",facteurs:"Sieste"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"40",intensite:"L",avant:"",apres:"Pas de spasme pendant course",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:["ytw"],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:4,energie:5,stress:1,bienetre:3},sommeil_duree:"7h",sommeil_profond:"",sommeil_score:null,magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:""},
 ];
 
 // ── State ──
@@ -154,6 +160,7 @@ function norm(e){
   if(!e.social)e.social={oui:null,duree:'',qualite:null,avant:null,apres:null};
   if(e.heures_assis===undefined)e.heures_assis='';
   if(!e.exercices)e.exercices=[];
+  if(e.sommeil_score===undefined)e.sommeil_score=null;
   return e;
 }
 function emptyEntry(date){
@@ -162,7 +169,7 @@ function emptyEntry(date){
     posture:{trapeze:null,nuque:null,machoire:null,pommette:null},
     langue:'',respiration:'',exercices:[],social:{oui:null,duree:'',qualite:null,avant:null,apres:null},heures_assis:'',
     wellness:{sommeil_qualite:null,energie:null,stress:null,bienetre:null},
-    sommeil_duree:'',sommeil_profond:'',magnesium:'',hydratation:'',humeur:'',notes:''};
+    sommeil_duree:'',sommeil_profond:'',sommeil_score:null,magnesium:'',hydratation:'',humeur:'',notes:''};
 }
 
 // ── Storage ──
@@ -198,10 +205,9 @@ function setVal(path, val){
   for(let i=0;i<p.length-1;i++) o = o[p[i]];
   o[p[p.length-1]] = val;
   save();
-  // Targeted refresh only for sections that have conditional rendering
   patchButtons(path, val);
   patchConditionalSections(path, val);
-  renderDateStrip(); // dot update
+  renderDateStrip();
 }
 
 function togEx(id){
@@ -211,7 +217,6 @@ function togEx(id){
   const i = e.exercices.indexOf(id);
   if(i>=0) e.exercices.splice(i,1); else e.exercices.push(id);
   save();
-  // Patch just this exercise row
   const row = document.querySelector(`.exrow[data-id="${id}"]`);
   if(row){
     const on = e.exercices.includes(id);
@@ -220,10 +225,7 @@ function togEx(id){
 }
 
 // ── Targeted DOM patches ──
-
-// Update button active states after setVal
 function patchButtons(path, val){
-  // Score buttons: data-path + data-val
   document.querySelectorAll(`.sbtn[data-path="${path}"]`).forEach(btn=>{
     const bval = btn.dataset.val === 'null' ? null : Number(btn.dataset.val);
     const on = bval === val;
@@ -232,7 +234,6 @@ function patchButtons(path, val){
     btn.style.background = on ? col : '';
     btn.style.borderColor = on ? col : '';
   });
-  // Toggle buttons: data-path + data-val (string)
   document.querySelectorAll(`.tbtn[data-path="${path}"]`).forEach(btn=>{
     const on = btn.dataset.val === String(val) || (val === true && btn.dataset.val === 'true') || (val === false && btn.dataset.val === 'false') || (val === null && btn.dataset.val === 'null');
     btn.classList.toggle('on', on);
@@ -242,27 +243,18 @@ function patchButtons(path, val){
   });
 }
 
-// Sections that conditionally show/hide based on a value
 function patchConditionalSections(path, val){
-  // allegement fields
   if(path === 'allegement.oui'){
     const sec = document.getElementById('allegement-fields');
-    if(sec){
-      sec.style.display = val === true ? 'flex' : 'none';
-    }
+    if(sec) sec.style.display = val === true ? 'flex' : 'none';
   }
-  // social sub-card
   if(path === 'social.oui'){
     const sec = document.getElementById('social-fields');
-    if(sec){
-      sec.style.display = val === true ? 'block' : 'none';
-    }
+    if(sec) sec.style.display = val === true ? 'block' : 'none';
   }
-  // social impact result
   if(path === 'social.avant' || path === 'social.apres'){
     refreshSocialImpact();
   }
-  // heures_assis badge
   if(path === 'heures_assis'){
     const badge = document.getElementById('assis-badge');
     if(badge){
@@ -306,11 +298,12 @@ function refreshSocialImpact(){
 // ── Helpers ──
 function sc(v){return v<=2?'var(--green)':v<=3?'#e67e22':'var(--red)';}
 function avg(e){
-  const v=[e.spasmes.intensite,e.spasmes.frequence,e.spasmes.gene].filter(Boolean);
+  const v=[e.spasmes.intensite,e.spasmes.frequence,e.spasmes.gene].filter(x=>x!=null);
   return v.length?(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1):null;
 }
 function assisC(h){const n=parseFloat(h);return isNaN(n)?'var(--faint)':n<=2?'var(--green)':n<=5?'#e67e22':'var(--red)';}
 function assisBg(h){const n=parseFloat(h);return isNaN(n)?'':n<=2?'#edfbf3':n<=5?'#fef9ec':'#fdf0f0';}
+function sommeilScoreC(v){return v==null?'':v>=8?'var(--green)':v>=5?'#e67e22':'var(--red)';}
 
 // ── Export ──
 function exportJSON(){
@@ -323,16 +316,28 @@ function exportJSON(){
   document.body.removeChild(a);URL.revokeObjectURL(url);
 }
 
-// ── Score/toggle button builders (with data-* attrs) ──
+// ── Score/toggle button builders ──
 function scoreButtons(vals, current, path, color){
-  return vals.map(v=>{
+  const wide = vals.length >= 6;
+  return `<div class="sbtns${wide?' wide':''}">`+vals.map(v=>{
     const on = current === v;
-    // click: if already on → set null, else set v
     return `<button class="sbtn${on?' on':''}" 
       data-path="${path}" data-val="${v}" data-color="${color}"
       style="${on?'background:'+color+';border-color:'+color:''}"
       onclick="setVal('${path}',${current===v?'null':v})">${v}</button>`;
-  }).join('');
+  }).join('')+'</div>';
+}
+
+// 0-10 score buttons (two rows)
+function scoreButtons10(current, path, color){
+  const vals = [0,1,2,3,4,5,6,7,8,9,10];
+  return `<div class="sbtns score10">`+vals.map(v=>{
+    const on = current === v;
+    return `<button class="sbtn${on?' on':''}" 
+      data-path="${path}" data-val="${v}" data-color="${color}"
+      style="${on?'background:'+color+';border-color:'+color:''}"
+      onclick="setVal('${path}',${current===v?'null':v})">${v}</button>`;
+  }).join('')+'</div>';
 }
 
 function toggleButtons(opts, current, path, color){
@@ -373,7 +378,7 @@ function renderDateStrip(){
     const d=new Date();d.setDate(d.getDate()-i);
     const s=d.toISOString().split('T')[0];
     const on=s===activeDate;
-    const hasData=!!(entries[s]&&entries[s].spasmes&&entries[s].spasmes.intensite);
+    const hasData=!!(entries[s]&&entries[s].spasmes&&entries[s].spasmes.intensite!=null);
     html+=`<button class="dbtn${on?' on':''}" onclick="selectDate('${s}')">
       <span class="dn">${d.getDate()}</span>
       <span class="dw">${d.toLocaleDateString('fr-FR',{weekday:'short'}).toUpperCase()}</span>
@@ -384,7 +389,7 @@ function renderDateStrip(){
 }
 function selectDate(d){activeDate=d;renderDateStrip();renderForm();}
 
-// ── Full form render (only on date change) ──
+// ── Full form render ──
 function renderForm(){
   const e = entries[activeDate] || emptyEntry(activeDate);
   const s = e.social || {oui:null,duree:'',qualite:null,avant:null,apres:null};
@@ -404,7 +409,7 @@ function renderForm(){
   <div class="div"><span class="div-lbl" style="color:var(--red)">⚡ Spasmes</span><div class="div-line"></div></div>
   ${['intensite:Intensité','frequence:Fréquence','gene:Gêne fonctionnelle'].map(f=>{
     const[k,lbl]=f.split(':');
-    return `<div class="mb16"><div class="slbl">${lbl}</div><div class="sbtns">${scoreButtons([1,2,3,4,5],e.spasmes[k],'spasmes.'+k,'var(--red)')}</div></div>`;
+    return `<div class="mb16"><div class="slbl">${lbl}</div>${scoreButtons([0,1,2,3,4,5],e.spasmes[k],'spasmes.'+k,'var(--red)')}</div>`;
   }).join('')}
 
   <div class="mb10">
@@ -459,7 +464,7 @@ function renderForm(){
   <div class="div"><span class="div-lbl" style="color:var(--purple)">🦴 Posture & Tension</span><div class="div-line"></div></div>
   ${['trapeze:Trapèze gauche','nuque:Nuque / cou gauche','machoire:Mâchoire gauche','pommette:Pommette gauche'].map(f=>{
     const[k,lbl]=f.split(':');
-    return `<div class="mb16"><div class="slbl">${lbl}</div><div class="sbtns">${scoreButtons([1,2,3,4,5],e.posture[k],'posture.'+k,'var(--purple)')}</div></div>`;
+    return `<div class="mb16"><div class="slbl">${lbl}</div>${scoreButtons([0,1,2,3,4,5],e.posture[k],'posture.'+k,'var(--purple)')}</div>`;
   }).join('')}
   <div class="mb14"><div class="slbl">Langue au palais</div><div class="tbtns">${toggleButtons(['Oui','Non','Mixte'],e.langue,'langue','var(--purple)')}</div></div>
   <div class="mb10"><div class="slbl">Respiration</div><div class="tbtns">${toggleButtons(['Nasale','Orale','Mixte'],e.respiration,'respiration','var(--blue)')}</div></div>
@@ -498,11 +503,11 @@ function renderForm(){
   <div id="social-fields" style="display:${s.oui===true?'block':'none'}">
     <div class="scard">
       <div class="mb14"><div class="slbl">Durée</div><input placeholder="ex: 1h, 30min" value="${s.duree||''}" oninput="setVal('social.duree',this.value)"></div>
-      <div class="mb14"><div class="slbl">Qualité de l'interaction</div><div class="sbtns">${scoreButtons([1,2,3,4,5],s.qualite,'social.qualite','var(--teal)')}</div></div>
+      <div class="mb14"><div class="slbl">Qualité de l'interaction</div>${scoreButtons([0,1,2,3,4,5],s.qualite,'social.qualite','var(--teal)')}</div>
       <div class="slbl">Impact sur les spasmes</div>
       <div style="display:flex;gap:12px">
-        <div class="f1"><div class="sublbl">AVANT</div><div class="sbtns" style="flex-wrap:wrap">${scoreButtons([1,2,3,4,5],s.avant,'social.avant','var(--red)')}</div></div>
-        <div class="f1"><div class="sublbl">APRÈS</div><div class="sbtns" style="flex-wrap:wrap">${scoreButtons([1,2,3,4,5],s.apres,'social.apres','var(--red)')}</div></div>
+        <div class="f1"><div class="sublbl">AVANT</div>${scoreButtons([0,1,2,3,4,5],s.avant,'social.avant','var(--red)')}</div>
+        <div class="f1"><div class="sublbl">APRÈS</div>${scoreButtons([0,1,2,3,4,5],s.apres,'social.apres','var(--red)')}</div>
       </div>
       <div id="social-impact" class="imp-res" style="display:${si!==null?'':'none'};background:${siBg};border:1px solid ${siBc}">
         <span style="color:${siCol}">${siTxt}</span>
@@ -512,11 +517,17 @@ function renderForm(){
 
   <div class="div"><span class="div-lbl" style="color:var(--green)">🌿 Wellness</span><div class="div-line"></div></div>
   ${[['sommeil_qualite','Qualité sommeil','var(--green)'],['energie','Énergie','var(--green)'],['stress','Stress','var(--red)'],['bienetre','Bien-être global','var(--green)']].map(([k,lbl,col])=>`
-    <div class="mb16"><div class="slbl">${lbl}</div><div class="sbtns">${scoreButtons([1,2,3,4,5],e.wellness[k],'wellness.'+k,col)}</div></div>
+    <div class="mb16"><div class="slbl">${lbl}</div>${scoreButtons([0,1,2,3,4,5],e.wellness[k],'wellness.'+k,col)}</div>
   `).join('')}
   <div class="r2 mb10">
     <div class="f1"><input placeholder="Durée sommeil (7h30)" value="${e.sommeil_duree||''}" oninput="setVal('sommeil_duree',this.value)"></div>
     <div class="f1"><input placeholder="Sommeil profond" value="${e.sommeil_profond||''}" oninput="setVal('sommeil_profond',this.value)"></div>
+  </div>
+  <div class="card mb14">
+    <div class="ctitle">🌙 SCORE SOMMEIL /10</div>
+    <div class="slbl" style="margin-bottom:10px">Score global de la nuit</div>
+    ${scoreButtons10(e.sommeil_score,'sommeil_score','var(--green)')}
+    ${e.sommeil_score!=null?`<div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:11px;color:${sommeilScoreC(e.sommeil_score)}">${e.sommeil_score>=8?'✓ Bonne nuit':e.sommeil_score>=5?'⚠ Nuit correcte':'✗ Mauvaise nuit'}</div>`:''}
   </div>
   <div class="r2 mb14">
     <div class="f1"><input placeholder="Hydratation (litres)" value="${e.hydratation||''}" oninput="setVal('hydratation',this.value)"></div>
@@ -537,7 +548,7 @@ function renderHistory(){
   let html='<div style="padding-top:16px">';
   dates.forEach(date=>{
     const e=entries[date];
-    const a=avg(e);if(!a)return;
+    const a=avg(e);if(a===null)return;
     const mat=EM.filter(x=>x.m==='matin'&&e.exercices&&e.exercices.includes(x.id)).length;
     const soir=EM.filter(x=>x.m==='soir'&&e.exercices&&e.exercices.includes(x.id)).length;
     const soc=e.social||{};
@@ -553,9 +564,10 @@ function renderHistory(){
         ${e.heures_assis?`<span class="badge" style="background:${assisBg(e.heures_assis)};color:${assisC(e.heures_assis)}">🪑 ${e.heures_assis}h</span>`:''}
         ${mat>0?`<span class="badge" style="background:var(--accent-l);color:var(--accent)">🌅 ${mat}/${EM.filter(x=>x.m==='matin').length}</span>`:''}
         ${soir>0?`<span class="badge" style="background:#f3eefb;color:var(--purple)">🌙 ${soir}/${EM.filter(x=>x.m==='soir').length}</span>`:''}
-        ${soc.oui?`<span class="badge" style="background:#f0faf8;color:var(--teal)">👥${soc.duree?' '+soc.duree:''}${soc.qualite?' · '+soc.qualite+'/5':''}${si!==null?(si<0?' ↓'+Math.abs(si):si>0?' ↑'+si:' →'):''}</span>`:''}
+        ${soc.oui?`<span class="badge" style="background:#f0faf8;color:var(--teal)">👥${soc.duree?' '+soc.duree:''}${soc.qualite!=null?' · '+soc.qualite+'/5':''}${si!==null?(si<0?' ↓'+Math.abs(si):si>0?' ↑'+si:' →'):''}</span>`:''}
         ${e.allegement&&e.allegement.oui?`<span class="badge" style="background:#edfbf3;color:var(--green)">✓ allégement</span>`:''}
         ${e.wellness&&e.wellness.stress!=null?`<span class="badge" style="background:${e.wellness.stress<=2?'#edfbf3':'#fdf0f0'};color:${e.wellness.stress<=2?'var(--green)':'var(--red)'}">stress ${e.wellness.stress}/5</span>`:''}
+        ${e.sommeil_score!=null?`<span class="badge" style="background:${e.sommeil_score>=8?'#edfbf3':e.sommeil_score>=5?'#fef9ec':'#fdf0f0'};color:${sommeilScoreC(e.sommeil_score)}">🌙 ${e.sommeil_score}/10</span>`:''}
       </div>
       ${e.notes?`<div class="hnotes">${e.notes}</div>`:''}
     </div>`;
