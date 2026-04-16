@@ -14,6 +14,7 @@
   --text:#111;--mid:#555;--faint:#999;
   --accent:#b07d30;--accent-l:#f5ead8;
   --red:#d63031;--green:#00864a;--purple:#6c3483;--blue:#1a5276;--teal:#0e6655;
+  --orange:#c0392b;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);font-family:'Lora',serif;max-width:480px;margin:0 auto;min-height:100vh;}
@@ -65,6 +66,7 @@ textarea{resize:vertical;}
 .sublbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase;}
 .mlbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;margin:18px 0 10px;text-transform:uppercase;}
 
+/* Exercise rows */
 .exrow{display:flex;align-items:center;gap:12px;width:100%;padding:11px 14px;margin-bottom:7px;background:var(--card);border:1px solid var(--border);border-radius:11px;text-align:left;transition:all .12s;}
 .exrow.on{background:#edfbf3;border-color:var(--green);}
 .excheck{width:24px;height:24px;border-radius:6px;flex-shrink:0;background:transparent;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;transition:all .12s;}
@@ -73,6 +75,30 @@ textarea{resize:vertical;}
 .exrow.on .exmark{display:block;}
 .exlbl{font-size:14px;color:var(--mid);}
 .exrow.on .exlbl{color:var(--green);}
+
+/* Day type section */
+.day-section{border-radius:14px;padding:14px;margin-bottom:12px;}
+.day-section.jogging{background:#f0faf8;border:1px solid rgba(14,102,85,.2);}
+.day-section.renfo{background:#f5f0fb;border:1px solid rgba(108,52,131,.2);}
+.day-section.commun{background:#f5ead8;border:1px solid rgba(176,125,48,.25);}
+.day-section-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;font-weight:700;margin-bottom:4px;text-transform:uppercase;}
+.day-section-sub{font-family:'DM Mono',monospace;font-size:9px;margin-bottom:12px;opacity:.7;}
+.day-section.jogging .day-section-title{color:var(--teal);}
+.day-section.renfo .day-section-title{color:var(--purple);}
+.day-section.commun .day-section-title{color:var(--accent);}
+/* Inside a day-section, rows get slightly different background */
+.day-section .exrow{background:#fff;}
+.day-section.jogging .exrow.on{background:#d4f5e9;border-color:var(--green);}
+.day-section.renfo .exrow.on{background:#ede0f7;border-color:var(--purple);}
+.day-section.renfo .exrow.on .excheck{background:var(--purple);border-color:var(--purple);}
+.day-section.commun .exrow.on{background:#f5ead8;border-color:var(--accent);}
+.day-section.commun .exrow.on .excheck{background:var(--accent);border-color:var(--accent);}
+.day-section.commun .exrow.on .exlbl{color:var(--accent);}
+.day-section.renfo .exrow.on .exlbl{color:var(--purple);}
+
+/* Step label inside day section */
+.step-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--faint);letter-spacing:1px;margin:10px 0 6px;text-transform:uppercase;}
+.step-lbl:first-child{margin-top:0;}
 
 .scard{background:#f0faf8;border:1px solid rgba(14,102,85,.2);border-radius:12px;padding:14px;margin-top:10px;}
 .imp-res{margin-top:12px;padding:10px 14px;border-radius:10px;font-family:'DM Mono',monospace;font-size:12px;}
@@ -95,9 +121,7 @@ textarea{resize:vertical;}
 .mb6{margin-bottom:6px;}
 .gap8{gap:8px;}
 
-/* Score 0-5: wider buttons when 6 items */
 .sbtns.wide .sbtn{width:38px;height:38px;font-size:15px;}
-/* Score 0-10 */
 .sbtns.score10{flex-wrap:wrap;}
 .sbtns.score10 .sbtn{width:38px;height:38px;font-size:14px;}
 </style>
@@ -125,21 +149,69 @@ textarea{resize:vertical;}
 
 <script>
 const SK = 'journal_spasmes_MASTER';
-const EM = [
-  {id:'trapeze',label:'Étirement trapèze',m:'matin'},
-  {id:'scm',label:'Étirement SCM',m:'matin'},
-  {id:'extension_nuque',label:'Extension de nuque',m:'matin'},
-  {id:'pectoral_mineur',label:'Pectoral mineur',m:'matin'},
-  {id:'cercles_scapulaires',label:'Cercles scapulaires',m:'matin'},
-  {id:'prise_conscience',label:'Relâchement épaules (alarme horaire)',m:'journee'},
-  {id:'etirement_machoire',label:'Étirement mâchoire',m:'journee'},
-  {id:'retraction_omoplates',label:'Rétraction omoplates',m:'soir'},
-  {id:'ytw',label:'Y-T-W',m:'soir'},
-  {id:'face_pulls',label:'Face pulls',m:'soir'},
-  {id:'respiration_diaphragmatique',label:'Respiration diaphragmatique',m:'soir'},
-  {id:'chaleur',label:'Chaleur locale (trapèze gauche)',m:'soir'},
-  {id:'automassage',label:'Automassage balle de tennis',m:'soir'},
+
+// ── Exercise catalogue — structured by programme ──
+// Jour Jogging (J1): chaleur → jogging → automassage → prise_conscience
+// Jour Renforcement (J2): chaleur → retraction_omoplates → ytw → face_pulls → chin_tucks → automassage → respiration_diaphragmatique
+// Les deux jours (commun): prise_conscience, extension_nuque, scm, cercles_scapulaires
+
+const EX_SECTIONS = [
+  {
+    id: 'jogging',
+    label: '🏃 JOUR JOGGING',
+    sub: 'Chaleur → Jogging → Automassage',
+    cls: 'jogging',
+    steps: [
+      { label: '🌅 Avant', items: [
+        {id:'chaleur', label:'Chaleur — gilet/pad omoplates + nuque (10–15 min)'},
+      ]},
+      { label: '💆 Après', items: [
+        {id:'automassage', label:'Automassage inter-scapulaire (balle/poings)'},
+      ]},
+    ]
+  },
+  {
+    id: 'renfo',
+    label: '💪 JOUR RENFORCEMENT',
+    sub: 'Chaleur → Renforcement → Automassage',
+    cls: 'renfo',
+    steps: [
+      { label: '🌅 En premier', items: [
+        {id:'chaleur_renfo', label:'Chaleur — gilet/pad omoplates + nuque (10–15 min)'},
+      ]},
+      { label: '💪 Renforcement scapulaire', items: [
+        {id:'retraction_omoplates', label:'Rétraction des omoplates (15 rép × 2)'},
+        {id:'ytw', label:'Y-T-W (8–10 rép par lettre)'},
+        {id:'face_pulls', label:'Face pulls élastique (12–15 rép × 2)'},
+        {id:'chin_tucks', label:'Chin tucks — repositionnement cervical (10–15 rép)'},
+      ]},
+      { label: '💆 Après', items: [
+        {id:'automassage_renfo', label:'Automassage inter-scapulaire (balle/poings)'},
+      ]},
+      { label: '🌙 Soir', items: [
+        {id:'respiration_diaphragmatique', label:'Respiration diaphragmatique (5 min)'},
+      ]},
+    ]
+  },
+  {
+    id: 'commun',
+    label: '🔄 LES DEUX JOURS',
+    sub: 'À tout moment de la journée',
+    cls: 'commun',
+    steps: [
+      { label: '🔄 Journée', items: [
+        {id:'prise_conscience', label:'Prise de conscience posturale (alarme horaire)'},
+        {id:'extension_nuque', label:'Extension de nuque douce (réflexe)'},
+        {id:'scm', label:'Étirement SCM gauche (2 × 30 sec)'},
+        {id:'cercles_scapulaires', label:'Cercles scapulaires (2 min)'},
+      ]},
+    ]
+  },
 ];
+
+// Flat list for legacy compatibility (history badges)
+const EM_ALL = EX_SECTIONS.flatMap(s => s.steps.flatMap(st => st.items));
+
 const HIST = [
   {date:"2026-03-13",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:""},sport:{marche:{duree:"25",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Orale",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"2",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h08",sommeil_profond:"54min (92)",sommeil_score:null,magnesium:"Non",hydratation:"1,2L",humeur:"Neutre",notes:"Télétravail 2h assis"},
   {date:"2026-03-14",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:true,moment:"Fin de journée",facteurs:"Allongement sur côté gauche bras tendu"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h51",sommeil_profond:"35min (92)",sommeil_score:null,magnesium:"Non",hydratation:"80cl",humeur:"Bonne",notes:"Conduite voiture 2h"},
@@ -328,7 +400,6 @@ function scoreButtons(vals, current, path, color){
   }).join('')+'</div>';
 }
 
-// 0-10 score buttons (two rows)
 function scoreButtons10(current, path, color){
   const vals = [0,1,2,3,4,5,6,7,8,9,10];
   return `<div class="sbtns score10">`+vals.map(v=>{
@@ -350,13 +421,29 @@ function toggleButtons(opts, current, path, color){
   }).join('');
 }
 
-function exRows(list, exercices){
-  return list.map(ex=>{
-    const on = exercices && exercices.includes(ex.id);
-    return `<button class="exrow${on?' on':''}" data-id="${ex.id}" onclick="togEx('${ex.id}')">
-      <div class="excheck"><span class="exmark">✓</span></div>
-      <span class="exlbl">${ex.label}</span>
-    </button>`;
+// ── Exercise section renderer ──
+function renderExerciseSections(exercices){
+  return EX_SECTIONS.map(sec => {
+    const doneInSec = sec.steps.flatMap(st => st.items).filter(it => exercices && exercices.includes(it.id)).length;
+    const totalInSec = sec.steps.flatMap(st => st.items).length;
+    const progressTxt = doneInSec > 0 ? ` · ${doneInSec}/${totalInSec}` : '';
+
+    const stepsHtml = sec.steps.map(step => {
+      const rowsHtml = step.items.map(it => {
+        const on = exercices && exercices.includes(it.id);
+        return `<button class="exrow${on?' on':''}" data-id="${it.id}" onclick="togEx('${it.id}')">
+          <div class="excheck"><span class="exmark">✓</span></div>
+          <span class="exlbl">${it.label}</span>
+        </button>`;
+      }).join('');
+      return `<div class="step-lbl">${step.label}</div>${rowsHtml}`;
+    }).join('');
+
+    return `<div class="day-section ${sec.cls}">
+      <div class="day-section-title">${sec.label}<span style="font-weight:400;opacity:.6">${progressTxt}</span></div>
+      <div class="day-section-sub">${sec.sub}</div>
+      ${stepsHtml}
+    </div>`;
   }).join('');
 }
 
@@ -479,12 +566,7 @@ function renderForm(){
   </div>
 
   <div class="div"><span class="div-lbl" style="color:var(--blue)">💪 Exercices du jour</span><div class="div-line"></div></div>
-  <div class="mlbl" style="color:var(--accent)">🌅 MATIN</div>
-  ${exRows(EM.filter(x=>x.m==='matin'),e.exercices)}
-  <div class="mlbl" style="color:var(--blue)">💼 JOURNÉE</div>
-  ${exRows(EM.filter(x=>x.m==='journee'),e.exercices)}
-  <div class="mlbl" style="color:var(--purple)">🌙 SOIR</div>
-  ${exRows(EM.filter(x=>x.m==='soir'),e.exercices)}
+  ${renderExerciseSections(e.exercices)}
 
   <div class="div"><span class="div-lbl" style="color:var(--teal)">👥 Contact amis</span><div class="div-line"></div></div>
   <div class="mb14">
@@ -549,8 +631,7 @@ function renderHistory(){
   dates.forEach(date=>{
     const e=entries[date];
     const a=avg(e);if(a===null)return;
-    const mat=EM.filter(x=>x.m==='matin'&&e.exercices&&e.exercices.includes(x.id)).length;
-    const soir=EM.filter(x=>x.m==='soir'&&e.exercices&&e.exercices.includes(x.id)).length;
+    const totalDone = e.exercices ? e.exercices.length : 0;
     const soc=e.social||{};
     const si=soc.oui&&soc.avant!=null&&soc.apres!=null?soc.apres-soc.avant:null;
     html+=`<div class="hcard" onclick="selectDate('${date}');switchTab('form')">
@@ -562,8 +643,7 @@ function renderHistory(){
         ${e.sport&&e.sport.jogging&&e.sport.jogging.duree?`<span class="badge" style="background:#edfbf3;color:var(--green)">🏃 ${e.sport.jogging.duree}min</span>`:''}
         ${e.sport&&e.sport.marche&&e.sport.marche.duree?`<span class="badge" style="background:#edfbf3;color:var(--green)">🚶 ${e.sport.marche.duree}min</span>`:''}
         ${e.heures_assis?`<span class="badge" style="background:${assisBg(e.heures_assis)};color:${assisC(e.heures_assis)}">🪑 ${e.heures_assis}h</span>`:''}
-        ${mat>0?`<span class="badge" style="background:var(--accent-l);color:var(--accent)">🌅 ${mat}/${EM.filter(x=>x.m==='matin').length}</span>`:''}
-        ${soir>0?`<span class="badge" style="background:#f3eefb;color:var(--purple)">🌙 ${soir}/${EM.filter(x=>x.m==='soir').length}</span>`:''}
+        ${totalDone>0?`<span class="badge" style="background:var(--accent-l);color:var(--accent)">💪 ${totalDone} ex.</span>`:''}
         ${soc.oui?`<span class="badge" style="background:#f0faf8;color:var(--teal)">👥${soc.duree?' '+soc.duree:''}${soc.qualite!=null?' · '+soc.qualite+'/5':''}${si!==null?(si<0?' ↓'+Math.abs(si):si>0?' ↑'+si:' →'):''}</span>`:''}
         ${e.allegement&&e.allegement.oui?`<span class="badge" style="background:#edfbf3;color:var(--green)">✓ allégement</span>`:''}
         ${e.wellness&&e.wellness.stress!=null?`<span class="badge" style="background:${e.wellness.stress<=2?'#edfbf3':'#fdf0f0'};color:${e.wellness.stress<=2?'var(--green)':'var(--red)'}">stress ${e.wellness.stress}/5</span>`:''}
