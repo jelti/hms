@@ -157,16 +157,35 @@ const SK = 'journal_spasmes_MASTER';
 
 const EX_SECTIONS = [
   {
+    id: 'commun',
+    label: '🔄 LES DEUX JOURS',
+    sub: 'À tout moment de la journée',
+    cls: 'commun',
+    steps: [
+      { label: '🔄 Journée', items: [
+        {id:'prise_conscience', label:'Prise de conscience posturale (alarme horaire)'},
+        {id:'extension_nuque', label:'Extension de nuque douce (réflexe)'},
+        {id:'scm', label:'Étirement SCM gauche (2 × 30 sec)'},
+        {id:'cercles_scapulaires', label:'Cercles scapulaires (2 min)'},
+      ]},
+      { label: '🌙 Soir', items: [
+        {id:'respiration_diaphragmatique', label:'Respiration diaphragmatique (5 min)'},
+      ]},
+    ]
+  },
+  {
     id: 'jogging',
     label: '🏃 JOUR JOGGING',
     sub: 'Chaleur → Jogging → Automassage',
     cls: 'jogging',
     steps: [
-      { label: '🌅 Avant', items: [
-        {id:'chaleur', label:'Chaleur — gilet/pad omoplates + nuque (10–15 min)'},
+      { label: '💪 Renforcement', items: [
+        {id:'pompes', label:'Pompes (séries selon niveau)'},
+        {id:'planche', label:'Planche (maintien 30–60 sec)'},
       ]},
-      { label: '💆 Après', items: [
+      { label: '💆 Après jogging', items: [
         {id:'automassage', label:'Automassage inter-scapulaire (balle/poings)'},
+        {id:'trapeze', label:'Étirement trapèze gauche'},
       ]},
     ]
   },
@@ -184,26 +203,6 @@ const EX_SECTIONS = [
         {id:'ytw', label:'Y-T-W (8–10 rép par lettre)'},
         {id:'face_pulls', label:'Face pulls élastique (12–15 rép × 2)'},
         {id:'chin_tucks', label:'Chin tucks — repositionnement cervical (10–15 rép)'},
-      ]},
-      { label: '💆 Après', items: [
-        {id:'automassage_renfo', label:'Automassage inter-scapulaire (balle/poings)'},
-      ]},
-      { label: '🌙 Soir', items: [
-        {id:'respiration_diaphragmatique', label:'Respiration diaphragmatique (5 min)'},
-      ]},
-    ]
-  },
-  {
-    id: 'commun',
-    label: '🔄 LES DEUX JOURS',
-    sub: 'À tout moment de la journée',
-    cls: 'commun',
-    steps: [
-      { label: '🔄 Journée', items: [
-        {id:'prise_conscience', label:'Prise de conscience posturale (alarme horaire)'},
-        {id:'extension_nuque', label:'Extension de nuque douce (réflexe)'},
-        {id:'scm', label:'Étirement SCM gauche (2 × 30 sec)'},
-        {id:'cercles_scapulaires', label:'Cercles scapulaires (2 min)'},
       ]},
     ]
   },
