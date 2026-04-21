@@ -86,7 +86,6 @@ textarea{resize:vertical;}
 .day-section.jogging .day-section-title{color:var(--teal);}
 .day-section.renfo .day-section-title{color:var(--purple);}
 .day-section.commun .day-section-title{color:var(--accent);}
-/* Inside a day-section, rows get slightly different background */
 .day-section .exrow{background:#fff;}
 .day-section.jogging .exrow.on{background:#d4f5e9;border-color:var(--green);}
 .day-section.renfo .exrow.on{background:#ede0f7;border-color:var(--purple);}
@@ -96,7 +95,6 @@ textarea{resize:vertical;}
 .day-section.commun .exrow.on .exlbl{color:var(--accent);}
 .day-section.renfo .exrow.on .exlbl{color:var(--purple);}
 
-/* Step label inside day section */
 .step-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--faint);letter-spacing:1px;margin:10px 0 6px;text-transform:uppercase;}
 .step-lbl:first-child{margin-top:0;}
 
@@ -124,6 +122,10 @@ textarea{resize:vertical;}
 .sbtns.wide .sbtn{width:38px;height:38px;font-size:15px;}
 .sbtns.score10{flex-wrap:wrap;}
 .sbtns.score10 .sbtn{width:38px;height:38px;font-size:14px;}
+
+/* Allégement card */
+.alleg-card{background:#edfbf3;border:1px solid rgba(0,134,74,.2);border-radius:12px;padding:14px;margin-top:10px;}
+.alleg-card .ctitle{color:var(--green);}
 </style>
 </head>
 <body>
@@ -149,11 +151,6 @@ textarea{resize:vertical;}
 
 <script>
 const SK = 'journal_spasmes_MASTER';
-
-// ── Exercise catalogue — structured by programme ──
-// Jour Jogging (J1): chaleur → jogging → automassage → prise_conscience
-// Jour Renforcement (J2): chaleur → retraction_omoplates → ytw → face_pulls → chin_tucks → automassage → respiration_diaphragmatique
-// Les deux jours (commun): prise_conscience, extension_nuque, scm, cercles_scapulaires
 
 const EX_SECTIONS = [
   {
@@ -208,16 +205,15 @@ const EX_SECTIONS = [
   },
 ];
 
-// Flat list for legacy compatibility (history badges)
 const EM_ALL = EX_SECTIONS.flatMap(s => s.steps.flatMap(st => st.items));
 
 const HIST = [
-  {date:"2026-03-13",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:""},sport:{marche:{duree:"25",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Orale",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"2",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h08",sommeil_profond:"54min (92)",sommeil_score:null,magnesium:"Non",hydratation:"1,2L",humeur:"Neutre",notes:"Télétravail 2h assis"},
-  {date:"2026-03-14",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:true,moment:"Fin de journée",facteurs:"Allongement sur côté gauche bras tendu"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h51",sommeil_profond:"35min (92)",sommeil_score:null,magnesium:"Non",hydratation:"80cl",humeur:"Bonne",notes:"Conduite voiture 2h"},
-  {date:"2026-03-15",spasmes:{intensite:2,frequence:2,gene:2},allegement:{oui:true,moment:"Matinée",facteurs:"Allongé sur côté gauche bras tendu"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"30",intensite:"L",avant:"2",apres:"4",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:3,bienetre:2},sommeil_duree:"7h20",sommeil_profond:"50min (94)",sommeil_score:null,magnesium:"Non",hydratation:"1L40",humeur:"Bonne",notes:"Les spasmes amplifiés pendant la course"},
-  {date:"2026-03-16",spasmes:{intensite:3,frequence:4,gene:4},allegement:{oui:true,moment:"4→2",facteurs:"Sieste 15 min"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:3,energie:5,stress:2,bienetre:3},sommeil_duree:"6h35",sommeil_profond:"1h04 (80/100)",sommeil_score:null,magnesium:"2 gélules",hydratation:"1,5L",humeur:"Bonne",notes:"Respiration profonde 25 min. Nuit difficile cauchemars, réveils pipi"},
-  {date:"2026-03-17",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:""},sport:{marche:{duree:"30",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"4",wellness:{sommeil_qualite:4,energie:5,stress:2,bienetre:3},sommeil_duree:"7h24",sommeil_profond:"46min (87/100)",sommeil_score:null,magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:"Travail assis devant PC 4h"},
-  {date:"2026-03-18",spasmes:{intensite:3,frequence:4,gene:3},allegement:{oui:true,moment:"4→3",facteurs:"Sieste"},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"40",intensite:"L",avant:"",apres:"Pas de spasme pendant course",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:["ytw"],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:4,energie:5,stress:1,bienetre:3},sommeil_duree:"7h",sommeil_profond:"",sommeil_score:null,magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:""},
+  {date:"2026-03-13",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:"",avant:null,apres:null},sport:{marche:{duree:"25",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Orale",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"2",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h08",sommeil_profond:"54min (92)",sommeil_score:null,magnesium:"Non",hydratation:"1,2L",humeur:"Neutre",notes:"Télétravail 2h assis"},
+  {date:"2026-03-14",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:true,moment:"Fin de journée",facteurs:"Allongement sur côté gauche bras tendu",avant:null,apres:null},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h51",sommeil_profond:"35min (92)",sommeil_score:null,magnesium:"Non",hydratation:"80cl",humeur:"Bonne",notes:"Conduite voiture 2h"},
+  {date:"2026-03-15",spasmes:{intensite:2,frequence:2,gene:2},allegement:{oui:true,moment:"Matinée",facteurs:"Allongé sur côté gauche bras tendu",avant:null,apres:null},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"30",intensite:"L",avant:"2",apres:"4",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:3,bienetre:2},sommeil_duree:"7h20",sommeil_profond:"50min (94)",sommeil_score:null,magnesium:"Non",hydratation:"1L40",humeur:"Bonne",notes:"Les spasmes amplifiés pendant la course"},
+  {date:"2026-03-16",spasmes:{intensite:3,frequence:4,gene:4},allegement:{oui:true,moment:"4→2",facteurs:"Sieste 15 min",avant:null,apres:null},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:3,energie:5,stress:2,bienetre:3},sommeil_duree:"6h35",sommeil_profond:"1h04 (80/100)",sommeil_score:null,magnesium:"2 gélules",hydratation:"1,5L",humeur:"Bonne",notes:"Respiration profonde 25 min. Nuit difficile cauchemars, réveils pipi"},
+  {date:"2026-03-17",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:"",avant:null,apres:null},sport:{marche:{duree:"30",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"4",wellness:{sommeil_qualite:4,energie:5,stress:2,bienetre:3},sommeil_duree:"7h24",sommeil_profond:"46min (87/100)",sommeil_score:null,magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:"Travail assis devant PC 4h"},
+  {date:"2026-03-18",spasmes:{intensite:3,frequence:4,gene:3},allegement:{oui:true,moment:"4→3",facteurs:"Sieste",avant:null,apres:null},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"40",intensite:"L",avant:"",apres:"Pas de spasme pendant course",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:["ytw"],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:4,energie:5,stress:1,bienetre:3},sommeil_duree:"7h",sommeil_profond:"",sommeil_score:null,magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:""},
 ];
 
 // ── State ──
@@ -232,10 +228,15 @@ function norm(e){
   if(e.heures_assis===undefined)e.heures_assis='';
   if(!e.exercices)e.exercices=[];
   if(e.sommeil_score===undefined)e.sommeil_score=null;
+  // normalize allegement: add avant/apres if missing
+  if(!e.allegement)e.allegement={oui:null,moment:'',facteurs:'',avant:null,apres:null};
+  if(e.allegement.avant===undefined)e.allegement.avant=null;
+  if(e.allegement.apres===undefined)e.allegement.apres=null;
   return e;
 }
 function emptyEntry(date){
-  return{date,spasmes:{intensite:null,frequence:null,gene:null},allegement:{oui:null,moment:'',facteurs:''},
+  return{date,spasmes:{intensite:null,frequence:null,gene:null},
+    allegement:{oui:null,moment:'',facteurs:'',avant:null,apres:null},
     sport:{marche:{duree:'',intensite:'',avant:'',apres:''},jogging:{duree:'',intensite:'',avant:'',apres:'',delai:''}},
     posture:{trapeze:null,nuque:null,machoire:null,pommette:null},
     langue:'',respiration:'',exercices:[],social:{oui:null,duree:'',qualite:null,avant:null,apres:null},heures_assis:'',
@@ -319,6 +320,9 @@ function patchConditionalSections(path, val){
     const sec = document.getElementById('allegement-fields');
     if(sec) sec.style.display = val === true ? 'flex' : 'none';
   }
+  if(path === 'allegement.avant' || path === 'allegement.apres'){
+    refreshAllegementImpact();
+  }
   if(path === 'social.oui'){
     const sec = document.getElementById('social-fields');
     if(sec) sec.style.display = val === true ? 'block' : 'none';
@@ -339,6 +343,30 @@ function patchConditionalSections(path, val){
         badge.style.display = 'none';
       }
     }
+  }
+}
+
+function refreshAllegementImpact(){
+  const e = entries[activeDate];
+  if(!e) return;
+  const al = e.allegement || {};
+  const el = document.getElementById('allegement-impact');
+  if(!el) return;
+  if(al.avant != null && al.apres != null){
+    const diff = al.apres - al.avant;
+    const col = diff < 0 ? 'var(--green)' : diff > 0 ? 'var(--red)' : 'var(--mid)';
+    const bg = diff < 0 ? '#edfbf3' : diff > 0 ? '#fdf0f0' : '#f5f5f5';
+    const bc = diff < 0 ? 'var(--green)' : diff > 0 ? 'var(--red)' : 'var(--border)';
+    const txt = diff < 0 ? '↓ amélioration de '+Math.abs(diff)+' point'+(Math.abs(diff)>1?'s':'')
+              : diff > 0 ? '↑ aggravation de '+diff+' point'+(diff>1?'s':'')
+              : '→ pas de changement';
+    el.style.display = '';
+    el.style.background = bg;
+    el.style.border = '1px solid '+bc;
+    el.querySelector('span').style.color = col;
+    el.querySelector('span').textContent = txt;
+  } else {
+    el.style.display = 'none';
   }
 }
 
@@ -478,8 +506,18 @@ function selectDate(d){activeDate=d;renderDateStrip();renderForm();}
 // ── Full form render ──
 function renderForm(){
   const e = entries[activeDate] || emptyEntry(activeDate);
+  const al = e.allegement || {oui:null,moment:'',facteurs:'',avant:null,apres:null};
   const s = e.social || {oui:null,duree:'',qualite:null,avant:null,apres:null};
 
+  // Allégement impact
+  const aiDiff = al.avant != null && al.apres != null ? al.apres - al.avant : null;
+  const aiTxt = aiDiff===null ? '' : aiDiff<0 ? '↓ amélioration de '+Math.abs(aiDiff)+' point'+(Math.abs(aiDiff)>1?'s':'')
+    : aiDiff>0 ? '↑ aggravation de '+aiDiff+' point'+(aiDiff>1?'s':'') : '→ pas de changement';
+  const aiCol = aiDiff===null ? '' : aiDiff<0 ? 'var(--green)' : aiDiff>0 ? 'var(--red)' : 'var(--mid)';
+  const aiBg  = aiDiff===null ? '#f5f5f5' : aiDiff<0 ? '#edfbf3' : aiDiff>0 ? '#fdf0f0' : '#f5f5f5';
+  const aiBc  = aiDiff===null ? 'var(--border)' : aiDiff<0 ? 'var(--green)' : aiDiff>0 ? 'var(--red)' : 'var(--border)';
+
+  // Social impact
   const si = s.oui && s.avant!=null && s.apres!=null ? s.apres - s.avant : null;
   const siTxt = si===null ? '' : si<0 ? '↓ amélioration de '+Math.abs(si)+' point'+(Math.abs(si)>1?'s':'')
     : si>0 ? '↑ aggravation de '+si+' point'+(si>1?'s':'') : '→ pas de changement';
@@ -501,18 +539,34 @@ function renderForm(){
   <div class="mb10">
     <div class="slbl">Allégement</div>
     <div class="tbtns mb10">
-      <button class="tbtn${e.allegement.oui===true?' on':''}"
+      <button class="tbtn${al.oui===true?' on':''}"
         data-path="allegement.oui" data-val="true" data-color="var(--green)"
-        style="${e.allegement.oui===true?'background:var(--green);border-color:var(--green)':''}"
-        onclick="setVal('allegement.oui',${e.allegement.oui===true?'null':'true'})">Oui ✓</button>
-      <button class="tbtn${e.allegement.oui===false?' on':''}"
+        style="${al.oui===true?'background:var(--green);border-color:var(--green)':''}"
+        onclick="setVal('allegement.oui',${al.oui===true?'null':'true'})">Oui ✓</button>
+      <button class="tbtn${al.oui===false?' on':''}"
         data-path="allegement.oui" data-val="false" data-color="var(--red)"
-        style="${e.allegement.oui===false?'background:var(--red);border-color:var(--red)':''}"
-        onclick="setVal('allegement.oui',${e.allegement.oui===false?'null':'false'})">Non</button>
+        style="${al.oui===false?'background:var(--red);border-color:var(--red)':''}"
+        onclick="setVal('allegement.oui',${al.oui===false?'null':'false'})">Non</button>
     </div>
-    <div id="allegement-fields" style="display:${e.allegement.oui===true?'flex':'none'};flex-direction:column;gap:8px">
-      <input placeholder="Moment" value="${e.allegement.moment||''}" oninput="setVal('allegement.moment',this.value)">
-      <input placeholder="Facteurs suspectés" value="${e.allegement.facteurs||''}" oninput="setVal('allegement.facteurs',this.value)">
+    <div id="allegement-fields" style="display:${al.oui===true?'flex':'none'};flex-direction:column;gap:10px">
+      <input placeholder="Moment" value="${al.moment||''}" oninput="setVal('allegement.moment',this.value)">
+      <input placeholder="Facteurs suspectés" value="${al.facteurs||''}" oninput="setVal('allegement.facteurs',this.value)">
+      <div class="alleg-card">
+        <div class="ctitle">📊 IMPACT SUR LES SPASMES</div>
+        <div style="display:flex;gap:12px">
+          <div class="f1">
+            <div class="sublbl">AVANT</div>
+            ${scoreButtons([0,1,2,3,4,5],al.avant,'allegement.avant','var(--red)')}
+          </div>
+          <div class="f1">
+            <div class="sublbl">APRÈS</div>
+            ${scoreButtons([0,1,2,3,4,5],al.apres,'allegement.apres','var(--green)')}
+          </div>
+        </div>
+        <div id="allegement-impact" class="imp-res" style="display:${aiDiff!==null?'':'none'};background:${aiBg};border:1px solid ${aiBc}">
+          <span style="color:${aiCol}">${aiTxt}</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -633,6 +687,8 @@ function renderHistory(){
     const totalDone = e.exercices ? e.exercices.length : 0;
     const soc=e.social||{};
     const si=soc.oui&&soc.avant!=null&&soc.apres!=null?soc.apres-soc.avant:null;
+    const al=e.allegement||{};
+    const aiDiff=al.oui&&al.avant!=null&&al.apres!=null?al.apres-al.avant:null;
     html+=`<div class="hcard" onclick="selectDate('${date}');switchTab('form')">
       <div class="htop">
         <div class="hdate">${frDate(date).toUpperCase()}</div>
@@ -644,7 +700,7 @@ function renderHistory(){
         ${e.heures_assis?`<span class="badge" style="background:${assisBg(e.heures_assis)};color:${assisC(e.heures_assis)}">🪑 ${e.heures_assis}h</span>`:''}
         ${totalDone>0?`<span class="badge" style="background:var(--accent-l);color:var(--accent)">💪 ${totalDone} ex.</span>`:''}
         ${soc.oui?`<span class="badge" style="background:#f0faf8;color:var(--teal)">👥${soc.duree?' '+soc.duree:''}${soc.qualite!=null?' · '+soc.qualite+'/5':''}${si!==null?(si<0?' ↓'+Math.abs(si):si>0?' ↑'+si:' →'):''}</span>`:''}
-        ${e.allegement&&e.allegement.oui?`<span class="badge" style="background:#edfbf3;color:var(--green)">✓ allégement</span>`:''}
+        ${al.oui?`<span class="badge" style="background:${aiDiff!==null&&aiDiff<0?'#edfbf3':'#edfbf3'};color:var(--green)">✓ allégement${aiDiff!==null?(aiDiff<0?' ↓'+Math.abs(aiDiff):aiDiff>0?' ↑'+aiDiff:' →'):''}</span>`:''}
         ${e.wellness&&e.wellness.stress!=null?`<span class="badge" style="background:${e.wellness.stress<=2?'#edfbf3':'#fdf0f0'};color:${e.wellness.stress<=2?'var(--green)':'var(--red)'}">stress ${e.wellness.stress}/5</span>`:''}
         ${e.sommeil_score!=null?`<span class="badge" style="background:${e.sommeil_score>=8?'#edfbf3':e.sommeil_score>=5?'#fef9ec':'#fdf0f0'};color:${sommeilScoreC(e.sommeil_score)}">🌙 ${e.sommeil_score}/10</span>`:''}
       </div>
