@@ -46,6 +46,7 @@ button{font-family:inherit;cursor:pointer;}
 .div-line{flex:1;height:1px;background:var(--border);}
 
 .slbl{font-size:13px;color:var(--mid);margin-bottom:8px;}
+.sublbl-help{font-family:'DM Mono',monospace;font-size:9px;color:var(--faint);letter-spacing:1px;margin-bottom:8px;font-style:italic;}
 .sbtns{display:flex;gap:7px;}
 .sbtn{width:42px;height:42px;border-radius:10px;border:2px solid var(--border);background:var(--bg);color:var(--faint);font-family:'DM Mono',monospace;font-size:17px;font-weight:700;transition:all .12s;flex-shrink:0;}
 .sbtn.on{color:#fff;}
@@ -65,6 +66,40 @@ textarea{resize:vertical;}
 .f1{flex:1;}
 .sublbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase;}
 .mlbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;margin:18px 0 10px;text-transform:uppercase;}
+
+/* === 7 PILIERS === */
+.pillar{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;transition:all .15s;}
+.pillar.done{background:#edfbf3;border-color:rgba(0,134,74,.3);}
+.pillar-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.pillar-icon{font-size:20px;flex-shrink:0;}
+.pillar-name{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;font-weight:700;color:var(--text);text-transform:uppercase;flex:1;}
+.pillar.done .pillar-name{color:var(--green);}
+.pillar-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--faint);letter-spacing:1px;margin-bottom:10px;font-style:italic;}
+
+/* Inferred badge */
+.inferred-badge{display:inline-block;background:#fff8ec;color:var(--accent);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:4px;margin-left:6px;font-weight:600;text-transform:uppercase;border:1px solid rgba(176,125,48,.3);}
+
+/* Pillar toggle Oui/Non */
+.pillar-toggle{display:flex;gap:7px;margin-bottom:10px;}
+.pillar-yes{flex:1;padding:10px;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--mid);font-family:'DM Mono',monospace;font-size:12px;font-weight:600;transition:all .12s;}
+.pillar-yes.on{background:var(--green);border-color:var(--green);color:#fff;}
+.pillar-no{flex:1;padding:10px;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--mid);font-family:'DM Mono',monospace;font-size:12px;font-weight:600;transition:all .12s;}
+.pillar-no.on{background:var(--mid);border-color:var(--mid);color:#fff;}
+
+.pillar-fields{display:none;flex-direction:column;gap:10px;margin-top:10px;}
+.pillar-fields.show{display:flex;}
+
+/* Migration banner */
+.mig-banner{background:#fff8ec;border:1px solid rgba(176,125,48,.3);border-radius:12px;padding:12px 14px;margin:12px 0;font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);}
+.mig-banner-close{float:right;background:transparent;border:none;color:var(--accent);font-size:14px;cursor:pointer;padding:0 4px;}
+
+/* Collapsible legacy programs */
+.legacy-toggle{width:100%;background:var(--card);border:1px dashed var(--border2);border-radius:12px;padding:14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--faint);letter-spacing:2px;text-transform:uppercase;text-align:center;transition:all .15s;}
+.legacy-toggle:hover{border-color:var(--accent);color:var(--accent);}
+.legacy-toggle .arrow{display:inline-block;margin-left:8px;transition:transform .2s;}
+.legacy-toggle.open .arrow{transform:rotate(180deg);}
+.legacy-content{display:none;margin-top:10px;}
+.legacy-content.show{display:block;}
 
 /* Exercise rows */
 .exrow{display:flex;align-items:center;gap:12px;width:100%;padding:11px 14px;margin-bottom:7px;background:var(--card);border:1px solid var(--border);border-radius:11px;text-align:left;transition:all .12s;}
@@ -126,6 +161,13 @@ textarea{resize:vertical;}
 /* Allégement card */
 .alleg-card{background:#edfbf3;border:1px solid rgba(0,134,74,.2);border-radius:12px;padding:14px;margin-top:10px;}
 .alleg-card .ctitle{color:var(--green);}
+
+/* Wakeup highlight */
+.wakeup{background:linear-gradient(135deg,#fff8ec 0%,#f5ead8 100%);border:1px solid rgba(176,125,48,.3);border-radius:14px;padding:14px;margin-bottom:12px;}
+.wakeup-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;font-weight:700;margin-bottom:10px;text-transform:uppercase;}
+
+/* Anchor hint */
+.anchor-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--faint);letter-spacing:1px;margin-top:6px;font-style:italic;line-height:1.4;}
 </style>
 </head>
 <body>
@@ -151,13 +193,20 @@ textarea{resize:vertical;}
 
 <script>
 const SK = 'journal_spasmes_MASTER';
+const MIGRATION_VERSION = 1;
+const MIG_KEY = 'journal_spasmes_MIG_VERSION';
 
+// ── Micro-gestes (visibles en haut, réutilisent togEx/exercices) ──
+const MICRO_GESTES = [
+  {id:'chin_tucks', label:'Chin tuck (10–15 rép)'},
+  {id:'cercles_scapulaires', label:'Cercles scapulaires lents (1 min)'},
+  {id:'prise_conscience', label:'Prise de conscience corporelle (en marchant)'},
+];
+
+// ── Anciens exercices (panneau caché) ──
 const EX_SECTIONS = [
   {
-    id: 'commun',
-    label: '🔄 LES DEUX JOURS',
-    sub: 'À tout moment de la journée',
-    cls: 'commun',
+    id: 'commun', label: '🔄 LES DEUX JOURS', sub: 'À tout moment de la journée', cls: 'commun',
     steps: [
       { label: '🔄 Journée', items: [
         {id:'prise_conscience', label:'Prise de conscience posturale (alarme horaire)'},
@@ -171,10 +220,7 @@ const EX_SECTIONS = [
     ]
   },
   {
-    id: 'jogging',
-    label: '🏃 JOUR JOGGING',
-    sub: 'Chaleur → Jogging → Automassage',
-    cls: 'jogging',
+    id: 'jogging', label: '🏃 JOUR JOGGING', sub: 'Chaleur → Jogging → Automassage', cls: 'jogging',
     steps: [
       { label: '💪 Renforcement', items: [
         {id:'pompes', label:'Pompes (séries selon niveau)'},
@@ -187,10 +233,7 @@ const EX_SECTIONS = [
     ]
   },
   {
-    id: 'renfo',
-    label: '💪 JOUR RENFORCEMENT',
-    sub: 'Chaleur → Renforcement → Automassage',
-    cls: 'renfo',
+    id: 'renfo', label: '💪 JOUR RENFORCEMENT', sub: 'Chaleur → Renforcement → Automassage', cls: 'renfo',
     steps: [
       { label: '🌅 En premier', items: [
         {id:'chaleur_renfo', label:'Chaleur — gilet/pad omoplates + nuque (10–15 min)'},
@@ -205,43 +248,220 @@ const EX_SECTIONS = [
   },
 ];
 
-const EM_ALL = EX_SECTIONS.flatMap(s => s.steps.flatMap(st => st.items));
-
 const HIST = [
   {date:"2026-03-13",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:"",avant:null,apres:null},sport:{marche:{duree:"25",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Orale",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"2",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h08",sommeil_profond:"54min (92)",sommeil_score:null,magnesium:"Non",hydratation:"1,2L",humeur:"Neutre",notes:"Télétravail 2h assis"},
-  {date:"2026-03-14",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:true,moment:"Fin de journée",facteurs:"Allongement sur côté gauche bras tendu",avant:null,apres:null},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:2,bienetre:3},sommeil_duree:"7h51",sommeil_profond:"35min (92)",sommeil_score:null,magnesium:"Non",hydratation:"80cl",humeur:"Bonne",notes:"Conduite voiture 2h"},
-  {date:"2026-03-15",spasmes:{intensite:2,frequence:2,gene:2},allegement:{oui:true,moment:"Matinée",facteurs:"Allongé sur côté gauche bras tendu",avant:null,apres:null},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"30",intensite:"L",avant:"2",apres:"4",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:5,energie:5,stress:3,bienetre:2},sommeil_duree:"7h20",sommeil_profond:"50min (94)",sommeil_score:null,magnesium:"Non",hydratation:"1L40",humeur:"Bonne",notes:"Les spasmes amplifiés pendant la course"},
-  {date:"2026-03-16",spasmes:{intensite:3,frequence:4,gene:4},allegement:{oui:true,moment:"4→2",facteurs:"Sieste 15 min",avant:null,apres:null},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:3,energie:5,stress:2,bienetre:3},sommeil_duree:"6h35",sommeil_profond:"1h04 (80/100)",sommeil_score:null,magnesium:"2 gélules",hydratation:"1,5L",humeur:"Bonne",notes:"Respiration profonde 25 min. Nuit difficile cauchemars, réveils pipi"},
-  {date:"2026-03-17",spasmes:{intensite:3,frequence:3,gene:3},allegement:{oui:false,moment:"",facteurs:"",avant:null,apres:null},sport:{marche:{duree:"30",intensite:"L",avant:"",apres:""},jogging:{duree:"",intensite:"",avant:"",apres:"",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:[],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"4",wellness:{sommeil_qualite:4,energie:5,stress:2,bienetre:3},sommeil_duree:"7h24",sommeil_profond:"46min (87/100)",sommeil_score:null,magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:"Travail assis devant PC 4h"},
-  {date:"2026-03-18",spasmes:{intensite:3,frequence:4,gene:3},allegement:{oui:true,moment:"4→3",facteurs:"Sieste",avant:null,apres:null},sport:{marche:{duree:"",intensite:"",avant:"",apres:""},jogging:{duree:"40",intensite:"L",avant:"",apres:"Pas de spasme pendant course",delai:""}},posture:{trapeze:2,nuque:1,machoire:1,pommette:1},langue:"Oui",respiration:"Oui",exercices:["ytw"],social:{oui:null,duree:"",qualite:null,avant:null,apres:null},heures_assis:"",wellness:{sommeil_qualite:4,energie:5,stress:1,bienetre:3},sommeil_duree:"7h",sommeil_profond:"",sommeil_score:null,magnesium:"Non",hydratation:"50cl",humeur:"Bonne",notes:""},
 ];
 
 // ── State ──
 let entries = {};
 let activeDate = today();
 let activeTab = 'form';
+let legacyOpen = false;
+let migrationStats = null;
 
 function today(){return new Date().toISOString().split('T')[0];}
 function frDate(s){return new Date(s+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});}
+
+// ════════════════════════════════════════════════════════════
+// MIGRATION : remplit les nouveaux champs à partir des anciens
+// ════════════════════════════════════════════════════════════
+function migrateEntry(e){
+  // Si déjà migré, skip
+  if(e._migrated_v >= MIGRATION_VERSION) return {entry: e, changed: false};
+
+  const notes = (e.notes || '').toLowerCase();
+  const allegFact = ((e.allegement && e.allegement.facteurs) || '').toLowerCase();
+  const allegMoment = ((e.allegement && e.allegement.moment) || '').toLowerCase();
+  const exercices = e.exercices || [];
+
+  // Init piliers s'il manque
+  if(!e.piliers){
+    e.piliers = {
+      respiration_ventrale: null, relachement_debout: null,
+      relachement_allonge: null, relachement_duree: '',
+      chaleur: null, chaleur_duree: '', chaleur_type: '',
+      jogging: null, jogging_duree: '',
+      sommeil_calme: null, social: null, social_type: '',
+      massage: null, massage_zone: '',
+    };
+  }
+  if(!e._inferred) e._inferred = {};
+
+  // ── 1) Réveil avec spasme : parsing notes ──
+  if(e.reveil_spasme === undefined || e.reveil_spasme === null){
+    if(/r[ée]veil.{0,30}sans spasme|r[ée]veil calme|pas de spasme.{0,20}matin|pas de r[ée]veil avec spasme/i.test(notes)){
+      e.reveil_spasme = false;
+      e._inferred.reveil_spasme = true;
+    } else if(/r[ée]veil.{0,30}avec.{0,5}spasme|r[ée]veil.{0,15}spasme/i.test(notes)){
+      e.reveil_spasme = true;
+      e._inferred.reveil_spasme = true;
+    }
+  }
+
+  // ── 2) Tension globale gauche : moyenne posture ──
+  if(e.tension_globale_gauche === undefined || e.tension_globale_gauche === null){
+    const p = e.posture || {};
+    const vals = [p.trapeze, p.nuque, p.machoire, p.pommette].filter(x => typeof x === 'number');
+    if(vals.length >= 2){
+      e.tension_globale_gauche = Math.round(vals.reduce((a,b)=>a+b,0) / vals.length);
+      e._inferred.tension_globale_gauche = true;
+    }
+  }
+
+  // ── 3) Jogging : direct depuis sport.jogging.duree ──
+  if(e.piliers.jogging === null){
+    const jd = e.sport && e.sport.jogging && e.sport.jogging.duree;
+    if(jd){
+      e.piliers.jogging = true;
+      e.piliers.jogging_duree = String(jd);
+      e._inferred.jogging = false; // donnée réelle
+    }
+  }
+
+  // ── 4) Respiration ventrale : depuis exercices + respiration ──
+  if(e.piliers.respiration_ventrale === null){
+    const hasDiaph = exercices.includes('respiration_diaphragmatique');
+    const resp = (e.respiration || '').toLowerCase();
+    if(hasDiaph){
+      e.piliers.respiration_ventrale = 4;
+      e._inferred.respiration_ventrale = true;
+    } else if(resp.startsWith('nasal')){
+      e.piliers.respiration_ventrale = 3;
+      e._inferred.respiration_ventrale = true;
+    } else if(resp.startsWith('mixt') || resp === 'oui'){
+      e.piliers.respiration_ventrale = 2;
+      e._inferred.respiration_ventrale = true;
+    } else if(resp.startsWith('oral')){
+      e.piliers.respiration_ventrale = 1;
+      e._inferred.respiration_ventrale = true;
+    }
+  }
+
+  // ── 5) Social : direct depuis social.oui ──
+  if(e.piliers.social === null){
+    if(e.social && e.social.oui === true){
+      e.piliers.social = true;
+      // Tentative de type
+      if(/copain|ami|jeux|carte|parc|sortie/i.test(notes + ' ' + allegFact)){
+        e.piliers.social_type = 'amis';
+      } else if(/famille|fille|enfant/i.test(notes + ' ' + allegFact)){
+        e.piliers.social_type = 'famille';
+      }
+      e._inferred.social = false; // réel
+    } else if(e.social && e.social.oui === false){
+      e.piliers.social = false;
+      e._inferred.social = false;
+    }
+  }
+
+  // ── 6) Chaleur : parsing notes ──
+  if(e.piliers.chaleur === null){
+    let type = null, duree = null;
+    if(/hammam/i.test(notes)){
+      type = 'hammam';
+      const m = notes.match(/(\d+)\s*min.{0,15}hammam|hammam.{0,15}(\d+)\s*min/i);
+      if(m) duree = m[1] || m[2];
+    } else if(/jaccusi|jacuzzi/i.test(notes)){
+      type = 'jacuzzi';
+    } else if(/bain chaud|bain.{0,30}chaud/i.test(notes)){
+      type = 'bain';
+    } else if(exercices.includes('chaleur_renfo') || exercices.includes('chaleur')){
+      type = 'pad chaud';
+    }
+    if(type){
+      e.piliers.chaleur = true;
+      e.piliers.chaleur_type = type;
+      if(duree) e.piliers.chaleur_duree = duree;
+      e._inferred.chaleur = true;
+    }
+  }
+
+  // ── 7) Massage : parsing notes ──
+  if(e.piliers.massage === null){
+    if(/massage/i.test(notes)){
+      e.piliers.massage = true;
+      if(/all body|corps entier|complet/i.test(notes)) e.piliers.massage_zone = 'corps entier';
+      else if(/visage|face/i.test(notes)) e.piliers.massage_zone = 'visage';
+      else if(/clavicule|cou|nuque/i.test(notes)) e.piliers.massage_zone = 'cervical';
+      else e.piliers.massage_zone = '';
+      e._inferred.massage = true;
+    }
+  }
+
+  // ── 8) Relâchement allongé : depuis allegement.facteurs ──
+  if(e.piliers.relachement_allonge === null){
+    if(/allong[ée]|fauteuil.{0,15}nuque|sieste/i.test(allegFact + ' ' + allegMoment)){
+      e.piliers.relachement_allonge = true;
+      e.piliers.relachement_duree = (e.allegement && e.allegement.moment) || '';
+      e._inferred.relachement_allonge = true;
+    }
+  }
+
+  // Marquer comme migré
+  e._migrated_v = MIGRATION_VERSION;
+  return {entry: e, changed: true};
+}
+
+function migrateAll(){
+  let migrated = 0;
+  let inferred_counts = {
+    reveil_spasme: 0, tension_globale_gauche: 0, respiration_ventrale: 0,
+    chaleur: 0, massage: 0, relachement_allonge: 0,
+  };
+
+  Object.keys(entries).forEach(d => {
+    const result = migrateEntry(entries[d]);
+    if(result.changed){
+      migrated++;
+      const inf = entries[d]._inferred || {};
+      Object.keys(inferred_counts).forEach(k => {
+        if(inf[k]) inferred_counts[k]++;
+      });
+    }
+  });
+
+  return {migrated, inferred_counts};
+}
+
+// ── norm() : ajoute structures vides si manquantes (sans inférer) ──
 function norm(e){
   if(!e.social)e.social={oui:null,duree:'',qualite:null,avant:null,apres:null};
   if(e.heures_assis===undefined)e.heures_assis='';
   if(!e.exercices)e.exercices=[];
   if(e.sommeil_score===undefined)e.sommeil_score=null;
-  // normalize allegement: add avant/apres if missing
   if(!e.allegement)e.allegement={oui:null,moment:'',facteurs:'',avant:null,apres:null};
   if(e.allegement.avant===undefined)e.allegement.avant=null;
   if(e.allegement.apres===undefined)e.allegement.apres=null;
+
+  if(!e.piliers) e.piliers = {
+    respiration_ventrale: null, relachement_debout: null,
+    relachement_allonge: null, relachement_duree: '',
+    chaleur: null, chaleur_duree: '', chaleur_type: '',
+    jogging: null, jogging_duree: '',
+    sommeil_calme: null, social: null, social_type: '',
+    massage: null, massage_zone: '',
+  };
+  if(e.reveil_spasme === undefined) e.reveil_spasme = null;
+  if(e.tension_globale_gauche === undefined) e.tension_globale_gauche = null;
+  if(e.parole_intensite === undefined) e.parole_intensite = null;
+  if(e.positions_decharge === undefined) e.positions_decharge = '';
+  if(!e._inferred) e._inferred = {};
+  if(e._migrated_v === undefined) e._migrated_v = 0;
+
   return e;
 }
+
 function emptyEntry(date){
-  return{date,spasmes:{intensite:null,frequence:null,gene:null},
+  const e = norm({date,spasmes:{intensite:null,frequence:null,gene:null},
     allegement:{oui:null,moment:'',facteurs:'',avant:null,apres:null},
     sport:{marche:{duree:'',intensite:'',avant:'',apres:''},jogging:{duree:'',intensite:'',avant:'',apres:'',delai:''}},
     posture:{trapeze:null,nuque:null,machoire:null,pommette:null},
     langue:'',respiration:'',exercices:[],social:{oui:null,duree:'',qualite:null,avant:null,apres:null},heures_assis:'',
     wellness:{sommeil_qualite:null,energie:null,stress:null,bienetre:null},
-    sommeil_duree:'',sommeil_profond:'',sommeil_score:null,magnesium:'',hydratation:'',humeur:'',notes:''};
+    sommeil_duree:'',sommeil_profond:'',sommeil_score:null,magnesium:'',hydratation:'',humeur:'',notes:''});
+  // Une nouvelle entrée n'a pas besoin de migration
+  e._migrated_v = MIGRATION_VERSION;
+  return e;
 }
 
 // ── Storage ──
@@ -256,15 +476,23 @@ function load(){
       HIST.forEach(h=>{entries[h.date]=norm({...h});});
     }
   }catch{HIST.forEach(h=>{entries[h.date]=norm({...h});});}
+
+  // Lancer la migration si version trop ancienne
+  const lastMig = parseInt(localStorage.getItem(MIG_KEY) || '0', 10);
+  if(lastMig < MIGRATION_VERSION){
+    migrationStats = migrateAll();
+    save();
+    localStorage.setItem(MIG_KEY, String(MIGRATION_VERSION));
+  }
 }
 function save(){
   try{
     localStorage.setItem(SK,JSON.stringify(entries));
     const st=document.getElementById('save-st');
-    st.textContent='✓ sauvegardé';st.style.color='var(--green)';
+    if(st){st.textContent='✓ sauvegardé';st.style.color='var(--green)';}
   }catch{
     const st=document.getElementById('save-st');
-    st.textContent='⚠ erreur';st.style.color='var(--red)';
+    if(st){st.textContent='⚠ erreur';st.style.color='var(--red)';}
   }
 }
 
@@ -274,11 +502,20 @@ function setVal(path, val){
   const e = entries[activeDate];
   const p = path.split('.');
   let o = e;
-  for(let i=0;i<p.length-1;i++) o = o[p[i]];
+  for(let i=0;i<p.length-1;i++){
+    if(o[p[i]] === undefined || o[p[i]] === null) o[p[i]] = {};
+    o = o[p[i]];
+  }
   o[p[p.length-1]] = val;
+
+  // Si l'utilisateur modifie un champ, ce n'est plus "inféré"
+  const inferredKey = path.replace('piliers.','').replace(/_(duree|type|zone)$/,'');
+  if(e._inferred && e._inferred[inferredKey]) delete e._inferred[inferredKey];
+
   save();
   patchButtons(path, val);
   patchConditionalSections(path, val);
+  patchPillarStates(path, val);
   renderDateStrip();
 }
 
@@ -289,11 +526,24 @@ function togEx(id){
   const i = e.exercices.indexOf(id);
   if(i>=0) e.exercices.splice(i,1); else e.exercices.push(id);
   save();
-  const row = document.querySelector(`.exrow[data-id="${id}"]`);
-  if(row){
+  document.querySelectorAll(`.exrow[data-id="${id}"]`).forEach(row => {
     const on = e.exercices.includes(id);
     row.classList.toggle('on', on);
-  }
+  });
+}
+
+function toggleLegacy(){
+  legacyOpen = !legacyOpen;
+  const btn = document.getElementById('legacy-toggle');
+  const content = document.getElementById('legacy-content');
+  if(btn) btn.classList.toggle('open', legacyOpen);
+  if(content) content.classList.toggle('show', legacyOpen);
+}
+
+function dismissMigBanner(){
+  const b = document.getElementById('mig-banner');
+  if(b) b.style.display = 'none';
+  localStorage.setItem('journal_spasmes_MIG_DISMISSED', '1');
 }
 
 // ── Targeted DOM patches ──
@@ -313,6 +563,57 @@ function patchButtons(path, val){
     btn.style.background = on ? col : '';
     btn.style.borderColor = on ? col : '';
   });
+  document.querySelectorAll(`.pillar-yes[data-path="${path}"]`).forEach(btn=>{
+    btn.classList.toggle('on', val === true);
+  });
+  document.querySelectorAll(`.pillar-no[data-path="${path}"]`).forEach(btn=>{
+    btn.classList.toggle('on', val === false);
+  });
+}
+
+function patchPillarStates(path, val){
+  if(path === 'piliers.respiration_ventrale'){
+    const card = document.getElementById('pillar-respi');
+    if(card) card.classList.toggle('done', val !== null && val >= 3);
+  }
+  if(path === 'piliers.relachement_allonge'){
+    const card = document.getElementById('pillar-relachement');
+    if(card) card.classList.toggle('done', val === true);
+    const fields = document.getElementById('pillar-relachement-fields');
+    if(fields) fields.classList.toggle('show', val === true);
+  }
+  if(path === 'piliers.chaleur'){
+    const card = document.getElementById('pillar-chaleur');
+    if(card) card.classList.toggle('done', val === true);
+    const fields = document.getElementById('pillar-chaleur-fields');
+    if(fields) fields.classList.toggle('show', val === true);
+  }
+  if(path === 'piliers.jogging'){
+    const card = document.getElementById('pillar-jogging');
+    if(card) card.classList.toggle('done', val === true);
+    const fields = document.getElementById('pillar-jogging-fields');
+    if(fields) fields.classList.toggle('show', val === true);
+  }
+  if(path === 'piliers.sommeil_calme'){
+    const card = document.getElementById('pillar-sommeil');
+    if(card) card.classList.toggle('done', val === true);
+  }
+  if(path === 'reveil_spasme'){
+    const card = document.getElementById('pillar-sommeil');
+    if(card) card.classList.toggle('done', val === false);
+  }
+  if(path === 'piliers.social'){
+    const card = document.getElementById('pillar-social');
+    if(card) card.classList.toggle('done', val === true);
+    const fields = document.getElementById('pillar-social-fields');
+    if(fields) fields.classList.toggle('show', val === true);
+  }
+  if(path === 'piliers.massage'){
+    const card = document.getElementById('pillar-massage');
+    if(card) card.classList.toggle('done', val === true);
+    const fields = document.getElementById('pillar-massage-fields');
+    if(fields) fields.classList.toggle('show', val === true);
+  }
 }
 
 function patchConditionalSections(path, val){
@@ -320,16 +621,12 @@ function patchConditionalSections(path, val){
     const sec = document.getElementById('allegement-fields');
     if(sec) sec.style.display = val === true ? 'flex' : 'none';
   }
-  if(path === 'allegement.avant' || path === 'allegement.apres'){
-    refreshAllegementImpact();
-  }
+  if(path === 'allegement.avant' || path === 'allegement.apres'){refreshAllegementImpact();}
   if(path === 'social.oui'){
     const sec = document.getElementById('social-fields');
     if(sec) sec.style.display = val === true ? 'block' : 'none';
   }
-  if(path === 'social.avant' || path === 'social.apres'){
-    refreshSocialImpact();
-  }
+  if(path === 'social.avant' || path === 'social.apres'){refreshSocialImpact();}
   if(path === 'heures_assis'){
     const badge = document.getElementById('assis-badge');
     if(badge){
@@ -404,6 +701,11 @@ function assisC(h){const n=parseFloat(h);return isNaN(n)?'var(--faint)':n<=2?'va
 function assisBg(h){const n=parseFloat(h);return isNaN(n)?'':n<=2?'#edfbf3':n<=5?'#fef9ec':'#fdf0f0';}
 function sommeilScoreC(v){return v==null?'':v>=8?'var(--green)':v>=5?'#e67e22':'var(--red)';}
 
+function isInferred(e, key){
+  return !!(e._inferred && e._inferred[key]);
+}
+function infBadge(){return ' <span class="inferred-badge" title="Valeur inférée du passé">inféré</span>';}
+
 // ── Export ──
 function exportJSON(){
   const data=JSON.stringify(entries,null,2);
@@ -448,7 +750,25 @@ function toggleButtons(opts, current, path, color){
   }).join('');
 }
 
-// ── Exercise section renderer ──
+function pillarToggle(path, current){
+  return `<div class="pillar-toggle">
+    <button class="pillar-yes${current===true?' on':''}"
+      data-path="${path}"
+      onclick="setVal('${path}',${current===true?'null':'true'})">Oui ✓</button>
+    <button class="pillar-no${current===false?' on':''}"
+      data-path="${path}"
+      onclick="setVal('${path}',${current===false?'null':'false'})">Non</button>
+  </div>`;
+}
+
+function exerciseRow(item, exercices){
+  const on = exercices && exercices.includes(item.id);
+  return `<button class="exrow${on?' on':''}" data-id="${item.id}" onclick="togEx('${item.id}')">
+    <div class="excheck"><span class="exmark">✓</span></div>
+    <span class="exlbl">${item.label}</span>
+  </button>`;
+}
+
 function renderExerciseSections(exercices){
   return EX_SECTIONS.map(sec => {
     const doneInSec = sec.steps.flatMap(st => st.items).filter(it => exercices && exercices.includes(it.id)).length;
@@ -456,13 +776,7 @@ function renderExerciseSections(exercices){
     const progressTxt = doneInSec > 0 ? ` · ${doneInSec}/${totalInSec}` : '';
 
     const stepsHtml = sec.steps.map(step => {
-      const rowsHtml = step.items.map(it => {
-        const on = exercices && exercices.includes(it.id);
-        return `<button class="exrow${on?' on':''}" data-id="${it.id}" onclick="togEx('${it.id}')">
-          <div class="excheck"><span class="exmark">✓</span></div>
-          <span class="exlbl">${it.label}</span>
-        </button>`;
-      }).join('');
+      const rowsHtml = step.items.map(it => exerciseRow(it, exercices)).join('');
       return `<div class="step-lbl">${step.label}</div>${rowsHtml}`;
     }).join('');
 
@@ -503,13 +817,144 @@ function renderDateStrip(){
 }
 function selectDate(d){activeDate=d;renderDateStrip();renderForm();}
 
+// ── 7 PILIERS ──
+function renderPillars(e){
+  const p = e.piliers;
+  const respi = p.respiration_ventrale;
+  const respiDone = respi !== null && respi >= 3;
+
+  return `
+  <div class="div"><span class="div-lbl" style="color:var(--accent)">🌟 Les 7 piliers</span><div class="div-line"></div></div>
+
+  <div class="wakeup">
+    <div class="wakeup-title">🌅 Réveil — marqueur principal${isInferred(e,'reveil_spasme')?infBadge():''}</div>
+    <div class="slbl">Réveil avec spasme ?</div>
+    <div class="tbtns mb10">
+      <button class="tbtn${e.reveil_spasme===false?' on':''}"
+        data-path="reveil_spasme" data-val="false" data-color="var(--green)"
+        style="${e.reveil_spasme===false?'background:var(--green);border-color:var(--green)':''}"
+        onclick="setVal('reveil_spasme',${e.reveil_spasme===false?'null':'false'})">Non, calme ✓</button>
+      <button class="tbtn${e.reveil_spasme===true?' on':''}"
+        data-path="reveil_spasme" data-val="true" data-color="var(--red)"
+        style="${e.reveil_spasme===true?'background:var(--red);border-color:var(--red)':''}"
+        onclick="setVal('reveil_spasme',${e.reveil_spasme===true?'null':'true'})">Oui</button>
+    </div>
+    <div class="slbl">Tension globale gauche au lever${isInferred(e,'tension_globale_gauche')?infBadge():''}</div>
+    ${scoreButtons([0,1,2,3,4,5], e.tension_globale_gauche, 'tension_globale_gauche', 'var(--purple)')}
+  </div>
+
+  <div class="pillar${respiDone?' done':''}" id="pillar-respi">
+    <div class="pillar-head">
+      <span class="pillar-icon">🫁</span>
+      <span class="pillar-name">1. Respiration ventrale${isInferred(e,'respiration_ventrale')?infBadge():''}</span>
+    </div>
+    <div class="pillar-hint">Diaphragmatique, nasale, en continu — fil rouge des autres piliers</div>
+    <div class="slbl">Qualité dans la journée</div>
+    ${scoreButtons([0,1,2,3,4,5], respi, 'piliers.respiration_ventrale', 'var(--blue)')}
+    <div class="anchor-hint">0 = oubliée · 3 = présente sur moments-clés · 5 = automatique continue</div>
+  </div>
+
+  <div class="pillar${p.relachement_allonge===true?' done':''}" id="pillar-relachement">
+    <div class="pillar-head">
+      <span class="pillar-icon">🛋️</span>
+      <span class="pillar-name">2. Relâchement allongé${isInferred(e,'relachement_allonge')?infBadge():''}</span>
+    </div>
+    <div class="pillar-hint">Position allongée 10–15 min + respiration ventrale</div>
+    ${pillarToggle('piliers.relachement_allonge', p.relachement_allonge)}
+    <div class="pillar-fields${p.relachement_allonge===true?' show':''}" id="pillar-relachement-fields">
+      <input placeholder="Durée (ex: 15 min) + moment" value="${p.relachement_duree||''}" oninput="setVal('piliers.relachement_duree',this.value)">
+    </div>
+    <div class="anchor-hint" style="margin-top:8px">+ Positions debout intuitives (omoplate gauche) → noter en bas</div>
+  </div>
+
+  <div class="pillar${p.chaleur===true?' done':''}" id="pillar-chaleur">
+    <div class="pillar-head">
+      <span class="pillar-icon">🔥</span>
+      <span class="pillar-name">3. Chaleur${isInferred(e,'chaleur')?infBadge():''}</span>
+    </div>
+    <div class="pillar-hint">Hammam, bain chaud, douche prolongée — 20–25 min</div>
+    ${pillarToggle('piliers.chaleur', p.chaleur)}
+    <div class="pillar-fields${p.chaleur===true?' show':''}" id="pillar-chaleur-fields">
+      <div class="r2">
+        <div class="f1"><input placeholder="Type (hammam, bain...)" value="${p.chaleur_type||''}" oninput="setVal('piliers.chaleur_type',this.value)"></div>
+        <div class="f1"><input placeholder="Durée (min)" value="${p.chaleur_duree||''}" oninput="setVal('piliers.chaleur_duree',this.value)"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pillar${p.jogging===true?' done':''}" id="pillar-jogging">
+    <div class="pillar-head">
+      <span class="pillar-icon">🏃</span>
+      <span class="pillar-name">4. Jogging</span>
+    </div>
+    <div class="pillar-hint">≥60 min, allure légère, respiration nasale ventrale</div>
+    ${pillarToggle('piliers.jogging', p.jogging)}
+    <div class="pillar-fields${p.jogging===true?' show':''}" id="pillar-jogging-fields">
+      <input placeholder="Durée (min)" value="${p.jogging_duree||''}" oninput="setVal('piliers.jogging_duree',this.value)">
+    </div>
+  </div>
+
+  <div class="pillar${e.reveil_spasme===false?' done':''}" id="pillar-sommeil">
+    <div class="pillar-head">
+      <span class="pillar-icon">🌙</span>
+      <span class="pillar-name">5. Sommeil</span>
+    </div>
+    <div class="pillar-hint">Réveil calme = marqueur (rempli en haut)</div>
+    <div class="r2">
+      <div class="f1"><input placeholder="Durée sommeil" value="${e.sommeil_duree||''}" oninput="setVal('sommeil_duree',this.value)"></div>
+      <div class="f1"><input placeholder="Sommeil profond" value="${e.sommeil_profond||''}" oninput="setVal('sommeil_profond',this.value)"></div>
+    </div>
+  </div>
+
+  <div class="pillar${p.social===true?' done':''}" id="pillar-social">
+    <div class="pillar-head">
+      <span class="pillar-icon">👥</span>
+      <span class="pillar-name">6. Activité sociale</span>
+    </div>
+    <div class="pillar-hint">Sortir, voir des gens, jouer avec ta fille — déconnexion</div>
+    ${pillarToggle('piliers.social', p.social)}
+    <div class="pillar-fields${p.social===true?' show':''}" id="pillar-social-fields">
+      <input placeholder="Type / personnes / contexte" value="${p.social_type||''}" oninput="setVal('piliers.social_type',this.value)">
+    </div>
+  </div>
+
+  <div class="pillar${p.massage===true?' done':''}" id="pillar-massage">
+    <div class="pillar-head">
+      <span class="pillar-icon">💆</span>
+      <span class="pillar-name">7. Massage${isInferred(e,'massage')?infBadge():''}</span>
+    </div>
+    <div class="pillar-hint">1× par semaine, corps entier ou cervico-mandibulaire</div>
+    ${pillarToggle('piliers.massage', p.massage)}
+    <div class="pillar-fields${p.massage===true?' show':''}" id="pillar-massage-fields">
+      <input placeholder="Zone (corps entier, nuque...)" value="${p.massage_zone||''}" oninput="setVal('piliers.massage_zone',this.value)">
+    </div>
+  </div>
+
+  <div class="div"><span class="div-lbl" style="color:var(--accent)">✨ Micro-gestes</span><div class="div-line"></div></div>
+  <div class="anchor-hint" style="margin-bottom:10px">2–3 min max, au lever ou en marchant — sans forcer</div>
+  ${MICRO_GESTES.map(it => exerciseRow(it, e.exercices)).join('')}
+  `;
+}
+
+// ── Migration banner ──
+function renderMigBanner(){
+  if(!migrationStats || migrationStats.migrated === 0) return '';
+  if(localStorage.getItem('journal_spasmes_MIG_DISMISSED') === '1') return '';
+  const ic = migrationStats.inferred_counts;
+  return `<div class="mig-banner" id="mig-banner">
+    <button class="mig-banner-close" onclick="dismissMigBanner()">×</button>
+    <strong>📦 Migration : ${migrationStats.migrated} entrées enrichies</strong><br>
+    Réveil×${ic.reveil_spasme} · Tension×${ic.tension_globale_gauche} · Respi×${ic.respiration_ventrale} · Chaleur×${ic.chaleur} · Massage×${ic.massage} · Relâch.×${ic.relachement_allonge}<br>
+    <span style="font-size:9px;opacity:.7">Les valeurs inférées portent un badge "inféré" — tu peux les corriger en cliquant dessus.</span>
+  </div>`;
+}
+
 // ── Full form render ──
 function renderForm(){
   const e = entries[activeDate] || emptyEntry(activeDate);
   const al = e.allegement || {oui:null,moment:'',facteurs:'',avant:null,apres:null};
   const s = e.social || {oui:null,duree:'',qualite:null,avant:null,apres:null};
 
-  // Allégement impact
   const aiDiff = al.avant != null && al.apres != null ? al.apres - al.avant : null;
   const aiTxt = aiDiff===null ? '' : aiDiff<0 ? '↓ amélioration de '+Math.abs(aiDiff)+' point'+(Math.abs(aiDiff)>1?'s':'')
     : aiDiff>0 ? '↑ aggravation de '+aiDiff+' point'+(aiDiff>1?'s':'') : '→ pas de changement';
@@ -517,7 +962,6 @@ function renderForm(){
   const aiBg  = aiDiff===null ? '#f5f5f5' : aiDiff<0 ? '#edfbf3' : aiDiff>0 ? '#fdf0f0' : '#f5f5f5';
   const aiBc  = aiDiff===null ? 'var(--border)' : aiDiff<0 ? 'var(--green)' : aiDiff>0 ? 'var(--red)' : 'var(--border)';
 
-  // Social impact
   const si = s.oui && s.avant!=null && s.apres!=null ? s.apres - s.avant : null;
   const siTxt = si===null ? '' : si<0 ? '↓ amélioration de '+Math.abs(si)+' point'+(Math.abs(si)>1?'s':'')
     : si>0 ? '↑ aggravation de '+si+' point'+(si>1?'s':'') : '→ pas de changement';
@@ -528,16 +972,24 @@ function renderForm(){
   const asisN = parseFloat(e.heures_assis);
 
   let html = `
+  ${renderMigBanner()}
   <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--border2);letter-spacing:1px;margin:12px 0 4px">${frDate(activeDate).toUpperCase()}</div>
 
   <div class="div"><span class="div-lbl" style="color:var(--red)">⚡ Spasmes</span><div class="div-line"></div></div>
+  <div class="anchor-hint" style="margin-bottom:14px;font-size:10px">3 = état de référence · 2 = nettement mieux · 4 = nettement pire</div>
   ${['intensite:Intensité','frequence:Fréquence','gene:Gêne fonctionnelle'].map(f=>{
     const[k,lbl]=f.split(':');
     return `<div class="mb16"><div class="slbl">${lbl}</div>${scoreButtons([0,1,2,3,4,5],e.spasmes[k],'spasmes.'+k,'var(--red)')}</div>`;
   }).join('')}
 
+  <div class="mb16">
+    <div class="slbl">🗣️ Intensité de parole</div>
+    ${scoreButtons([0,1,2,3,4,5], e.parole_intensite, 'parole_intensite', 'var(--orange)')}
+    <div class="anchor-hint">0 = silencieux · 3 = journée normale · 5 = beaucoup parlé</div>
+  </div>
+
   <div class="mb10">
-    <div class="slbl">Allégement</div>
+    <div class="slbl">Allégement aujourd'hui ?</div>
     <div class="tbtns mb10">
       <button class="tbtn${al.oui===true?' on':''}"
         data-path="allegement.oui" data-val="true" data-color="var(--green)"
@@ -554,14 +1006,8 @@ function renderForm(){
       <div class="alleg-card">
         <div class="ctitle">📊 IMPACT SUR LES SPASMES</div>
         <div style="display:flex;gap:12px">
-          <div class="f1">
-            <div class="sublbl">AVANT</div>
-            ${scoreButtons([0,1,2,3,4,5],al.avant,'allegement.avant','var(--red)')}
-          </div>
-          <div class="f1">
-            <div class="sublbl">APRÈS</div>
-            ${scoreButtons([0,1,2,3,4,5],al.apres,'allegement.apres','var(--green)')}
-          </div>
+          <div class="f1"><div class="sublbl">AVANT</div>${scoreButtons([0,1,2,3,4,5],al.avant,'allegement.avant','var(--red)')}</div>
+          <div class="f1"><div class="sublbl">APRÈS</div>${scoreButtons([0,1,2,3,4,5],al.apres,'allegement.apres','var(--green)')}</div>
         </div>
         <div id="allegement-impact" class="imp-res" style="display:${aiDiff!==null?'':'none'};background:${aiBg};border:1px solid ${aiBc}">
           <span style="color:${aiCol}">${aiTxt}</span>
@@ -570,44 +1016,11 @@ function renderForm(){
     </div>
   </div>
 
-  <div class="div"><span class="div-lbl" style="color:var(--green)">🏃 Sport</span><div class="div-line"></div></div>
-  <div class="card">
-    <div class="ctitle">🚶 MARCHE</div>
-    <div class="r2">
-      <div class="f1"><input placeholder="Durée (min)" value="${e.sport.marche.duree||''}" oninput="setVal('sport.marche.duree',this.value)"></div>
-      <div class="tbtns">${['L','M','I'].map(i=>`<button class="tbtn${e.sport.marche.intensite===i?' on':''}"
-        data-path="sport.marche.intensite" data-val="${i}" data-color="var(--accent)"
-        style="${e.sport.marche.intensite===i?'background:var(--accent);border-color:var(--accent)':''}"
-        onclick="setVal('sport.marche.intensite','${e.sport.marche.intensite===i?'':i}')">${i}</button>`).join('')}</div>
-    </div>
-    <div class="r2">
-      <div class="f1"><input placeholder="Avant /5" value="${e.sport.marche.avant||''}" oninput="setVal('sport.marche.avant',this.value)"></div>
-      <div class="f1"><input placeholder="Après /5" value="${e.sport.marche.apres||''}" oninput="setVal('sport.marche.apres',this.value)"></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="ctitle">🏃 JOGGING</div>
-    <div class="r2">
-      <div class="f1"><input placeholder="Durée (min)" value="${e.sport.jogging.duree||''}" oninput="setVal('sport.jogging.duree',this.value)"></div>
-      <div class="tbtns">${['L','M','I'].map(i=>`<button class="tbtn${e.sport.jogging.intensite===i?' on':''}"
-        data-path="sport.jogging.intensite" data-val="${i}" data-color="var(--accent)"
-        style="${e.sport.jogging.intensite===i?'background:var(--accent);border-color:var(--accent)':''}"
-        onclick="setVal('sport.jogging.intensite','${e.sport.jogging.intensite===i?'':i}')">${i}</button>`).join('')}</div>
-    </div>
-    <div class="r2">
-      <div class="f1"><input placeholder="Avant /5" value="${e.sport.jogging.avant||''}" oninput="setVal('sport.jogging.avant',this.value)"></div>
-      <div class="f1"><input placeholder="Après /5" value="${e.sport.jogging.apres||''}" oninput="setVal('sport.jogging.apres',this.value)"></div>
-    </div>
-    <input placeholder="Délai soulagement (min)" value="${e.sport.jogging.delai||''}" oninput="setVal('sport.jogging.delai',this.value)">
-  </div>
+  ${renderPillars(e)}
 
-  <div class="div"><span class="div-lbl" style="color:var(--purple)">🦴 Posture & Tension</span><div class="div-line"></div></div>
-  ${['trapeze:Trapèze gauche','nuque:Nuque / cou gauche','machoire:Mâchoire gauche','pommette:Pommette gauche'].map(f=>{
-    const[k,lbl]=f.split(':');
-    return `<div class="mb16"><div class="slbl">${lbl}</div>${scoreButtons([0,1,2,3,4,5],e.posture[k],'posture.'+k,'var(--purple)')}</div>`;
-  }).join('')}
-  <div class="mb14"><div class="slbl">Langue au palais</div><div class="tbtns">${toggleButtons(['Oui','Non','Mixte'],e.langue,'langue','var(--purple)')}</div></div>
-  <div class="mb10"><div class="slbl">Respiration</div><div class="tbtns">${toggleButtons(['Nasale','Orale','Mixte'],e.respiration,'respiration','var(--blue)')}</div></div>
+  <div class="div"><span class="div-lbl" style="color:var(--accent)">🔓 Positions de décharge</span><div class="div-line"></div></div>
+  <div class="anchor-hint" style="margin-bottom:8px">Positions trouvées intuitivement — où, quand, ce que ça libère</div>
+  <textarea rows="3" placeholder="Ex: debout, tête vers arrière-gauche → étirement omoplate..." oninput="setVal('positions_decharge',this.value)">${e.positions_decharge||''}</textarea>
 
   <div class="div"><span class="div-lbl" style="color:#7f8c8d">🪑 Sédentarité</span><div class="div-line"></div></div>
   <div class="card">
@@ -618,60 +1031,109 @@ function renderForm(){
     </div>
   </div>
 
-  <div class="div"><span class="div-lbl" style="color:var(--blue)">💪 Exercices du jour</span><div class="div-line"></div></div>
-  ${renderExerciseSections(e.exercices)}
-
-  <div class="div"><span class="div-lbl" style="color:var(--teal)">👥 Contact amis</span><div class="div-line"></div></div>
-  <div class="mb14">
-    <div class="slbl">Contact aujourd'hui ?</div>
-    <div class="tbtns">
-      <button class="tbtn${s.oui===true?' on':''}"
-        data-path="social.oui" data-val="true" data-color="var(--teal)"
-        style="${s.oui===true?'background:var(--teal);border-color:var(--teal)':''}"
-        onclick="setVal('social.oui',${s.oui===true?'null':'true'})">Oui ✓</button>
-      <button class="tbtn${s.oui===false?' on':''}"
-        data-path="social.oui" data-val="false" data-color="var(--mid)"
-        style="${s.oui===false?'background:var(--mid);border-color:var(--mid)':''}"
-        onclick="setVal('social.oui',${s.oui===false?'null':'false'})">Non</button>
-    </div>
-  </div>
-  <div id="social-fields" style="display:${s.oui===true?'block':'none'}">
-    <div class="scard">
-      <div class="mb14"><div class="slbl">Durée</div><input placeholder="ex: 1h, 30min" value="${s.duree||''}" oninput="setVal('social.duree',this.value)"></div>
-      <div class="mb14"><div class="slbl">Qualité de l'interaction</div>${scoreButtons([0,1,2,3,4,5],s.qualite,'social.qualite','var(--teal)')}</div>
-      <div class="slbl">Impact sur les spasmes</div>
-      <div style="display:flex;gap:12px">
-        <div class="f1"><div class="sublbl">AVANT</div>${scoreButtons([0,1,2,3,4,5],s.avant,'social.avant','var(--red)')}</div>
-        <div class="f1"><div class="sublbl">APRÈS</div>${scoreButtons([0,1,2,3,4,5],s.apres,'social.apres','var(--red)')}</div>
-      </div>
-      <div id="social-impact" class="imp-res" style="display:${si!==null?'':'none'};background:${siBg};border:1px solid ${siBc}">
-        <span style="color:${siCol}">${siTxt}</span>
-      </div>
-    </div>
-  </div>
-
   <div class="div"><span class="div-lbl" style="color:var(--green)">🌿 Wellness</span><div class="div-line"></div></div>
-  ${[['sommeil_qualite','Qualité sommeil','var(--green)'],['energie','Énergie','var(--green)'],['stress','Stress','var(--red)'],['bienetre','Bien-être global','var(--green)']].map(([k,lbl,col])=>`
-    <div class="mb16"><div class="slbl">${lbl}</div>${scoreButtons([0,1,2,3,4,5],e.wellness[k],'wellness.'+k,col)}</div>
-  `).join('')}
-  <div class="r2 mb10">
-    <div class="f1"><input placeholder="Durée sommeil (7h30)" value="${e.sommeil_duree||''}" oninput="setVal('sommeil_duree',this.value)"></div>
-    <div class="f1"><input placeholder="Sommeil profond" value="${e.sommeil_profond||''}" oninput="setVal('sommeil_profond',this.value)"></div>
-  </div>
-  <div class="card mb14">
-    <div class="ctitle">🌙 SCORE SOMMEIL /10</div>
-    <div class="slbl" style="margin-bottom:10px">Score global de la nuit</div>
-    ${scoreButtons10(e.sommeil_score,'sommeil_score','var(--green)')}
-    ${e.sommeil_score!=null?`<div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:11px;color:${sommeilScoreC(e.sommeil_score)}">${e.sommeil_score>=8?'✓ Bonne nuit':e.sommeil_score>=5?'⚠ Nuit correcte':'✗ Mauvaise nuit'}</div>`:''}
-  </div>
-  <div class="r2 mb14">
-    <div class="f1"><input placeholder="Hydratation (litres)" value="${e.hydratation||''}" oninput="setVal('hydratation',this.value)"></div>
-    <div class="f1"><input placeholder="Magnésium" value="${e.magnesium||''}" oninput="setVal('magnesium',this.value)"></div>
-  </div>
+  <div class="mb16"><div class="slbl">Stress</div>${scoreButtons([0,1,2,3,4,5],e.wellness.stress,'wellness.stress','var(--red)')}</div>
+  <div class="mb16"><div class="slbl">Énergie</div>${scoreButtons([0,1,2,3,4,5],e.wellness.energie,'wellness.energie','var(--green)')}</div>
   <div class="mb10"><div class="slbl">Humeur</div><div class="tbtns">${toggleButtons(['Bonne','Neutre','Difficile'],e.humeur,'humeur','var(--accent)')}</div></div>
 
   <div class="div"><span class="div-lbl" style="color:var(--faint)">📝 Notes libres</span><div class="div-line"></div></div>
   <textarea rows="4" placeholder="Notes du jour..." oninput="setVal('notes',this.value)">${e.notes||''}</textarea>
+
+  <div style="margin-top:30px">
+    <button class="legacy-toggle${legacyOpen?' open':''}" id="legacy-toggle" onclick="toggleLegacy()">
+      📚 Anciens programmes (renforcement, étirements...) <span class="arrow">▾</span>
+    </button>
+    <div class="legacy-content${legacyOpen?' show':''}" id="legacy-content">
+
+      <div class="div"><span class="div-lbl" style="color:var(--purple)">🦴 Posture & Tension</span><div class="div-line"></div></div>
+      ${['trapeze:Trapèze gauche','nuque:Nuque / cou gauche','machoire:Mâchoire gauche','pommette:Pommette gauche'].map(f=>{
+        const[k,lbl]=f.split(':');
+        return `<div class="mb16"><div class="slbl">${lbl}</div>${scoreButtons([0,1,2,3,4,5],e.posture[k],'posture.'+k,'var(--purple)')}</div>`;
+      }).join('')}
+      <div class="mb14"><div class="slbl">Langue au palais</div><div class="tbtns">${toggleButtons(['Oui','Non','Mixte'],e.langue,'langue','var(--purple)')}</div></div>
+      <div class="mb10"><div class="slbl">Respiration</div><div class="tbtns">${toggleButtons(['Nasale','Orale','Mixte'],e.respiration,'respiration','var(--blue)')}</div></div>
+
+      <div class="div"><span class="div-lbl" style="color:var(--green)">🏃 Sport détaillé</span><div class="div-line"></div></div>
+      <div class="card">
+        <div class="ctitle">🚶 MARCHE</div>
+        <div class="r2">
+          <div class="f1"><input placeholder="Durée (min)" value="${e.sport.marche.duree||''}" oninput="setVal('sport.marche.duree',this.value)"></div>
+          <div class="tbtns">${['L','M','I'].map(i=>`<button class="tbtn${e.sport.marche.intensite===i?' on':''}"
+            data-path="sport.marche.intensite" data-val="${i}" data-color="var(--accent)"
+            style="${e.sport.marche.intensite===i?'background:var(--accent);border-color:var(--accent)':''}"
+            onclick="setVal('sport.marche.intensite','${e.sport.marche.intensite===i?'':i}')">${i}</button>`).join('')}</div>
+        </div>
+        <div class="r2">
+          <div class="f1"><input placeholder="Avant /5" value="${e.sport.marche.avant||''}" oninput="setVal('sport.marche.avant',this.value)"></div>
+          <div class="f1"><input placeholder="Après /5" value="${e.sport.marche.apres||''}" oninput="setVal('sport.marche.apres',this.value)"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">🏃 JOGGING (détail avant/après)</div>
+        <div class="r2">
+          <div class="f1"><input placeholder="Durée (min)" value="${e.sport.jogging.duree||''}" oninput="setVal('sport.jogging.duree',this.value)"></div>
+          <div class="tbtns">${['L','M','I'].map(i=>`<button class="tbtn${e.sport.jogging.intensite===i?' on':''}"
+            data-path="sport.jogging.intensite" data-val="${i}" data-color="var(--accent)"
+            style="${e.sport.jogging.intensite===i?'background:var(--accent);border-color:var(--accent)':''}"
+            onclick="setVal('sport.jogging.intensite','${e.sport.jogging.intensite===i?'':i}')">${i}</button>`).join('')}</div>
+        </div>
+        <div class="r2">
+          <div class="f1"><input placeholder="Avant /5" value="${e.sport.jogging.avant||''}" oninput="setVal('sport.jogging.avant',this.value)"></div>
+          <div class="f1"><input placeholder="Après /5" value="${e.sport.jogging.apres||''}" oninput="setVal('sport.jogging.apres',this.value)"></div>
+        </div>
+        <input placeholder="Délai soulagement (min)" value="${e.sport.jogging.delai||''}" oninput="setVal('sport.jogging.delai',this.value)">
+      </div>
+
+      <div class="div"><span class="div-lbl" style="color:var(--blue)">💪 Programmes d'exercices</span><div class="div-line"></div></div>
+      <div class="anchor-hint" style="margin-bottom:10px">Maintenu en mémoire — peu utilisé en phase actuelle (post-décharge)</div>
+      ${renderExerciseSections(e.exercices)}
+
+      <div class="div"><span class="div-lbl" style="color:var(--teal)">👥 Contact amis (détail)</span><div class="div-line"></div></div>
+      <div class="mb14">
+        <div class="slbl">Contact aujourd'hui ?</div>
+        <div class="tbtns">
+          <button class="tbtn${s.oui===true?' on':''}"
+            data-path="social.oui" data-val="true" data-color="var(--teal)"
+            style="${s.oui===true?'background:var(--teal);border-color:var(--teal)':''}"
+            onclick="setVal('social.oui',${s.oui===true?'null':'true'})">Oui ✓</button>
+          <button class="tbtn${s.oui===false?' on':''}"
+            data-path="social.oui" data-val="false" data-color="var(--mid)"
+            style="${s.oui===false?'background:var(--mid);border-color:var(--mid)':''}"
+            onclick="setVal('social.oui',${s.oui===false?'null':'false'})">Non</button>
+        </div>
+      </div>
+      <div id="social-fields" style="display:${s.oui===true?'block':'none'}">
+        <div class="scard">
+          <div class="mb14"><div class="slbl">Durée</div><input placeholder="ex: 1h, 30min" value="${s.duree||''}" oninput="setVal('social.duree',this.value)"></div>
+          <div class="mb14"><div class="slbl">Qualité de l'interaction</div>${scoreButtons([0,1,2,3,4,5],s.qualite,'social.qualite','var(--teal)')}</div>
+          <div class="slbl">Impact sur les spasmes</div>
+          <div style="display:flex;gap:12px">
+            <div class="f1"><div class="sublbl">AVANT</div>${scoreButtons([0,1,2,3,4,5],s.avant,'social.avant','var(--red)')}</div>
+            <div class="f1"><div class="sublbl">APRÈS</div>${scoreButtons([0,1,2,3,4,5],s.apres,'social.apres','var(--red)')}</div>
+          </div>
+          <div id="social-impact" class="imp-res" style="display:${si!==null?'':'none'};background:${siBg};border:1px solid ${siBc}">
+            <span style="color:${siCol}">${siTxt}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="div"><span class="div-lbl" style="color:var(--green)">🌙 Sommeil détaillé</span><div class="div-line"></div></div>
+      ${[['sommeil_qualite','Qualité sommeil','var(--green)'],['bienetre','Bien-être global','var(--green)']].map(([k,lbl,col])=>`
+        <div class="mb16"><div class="slbl">${lbl}</div>${scoreButtons([0,1,2,3,4,5],e.wellness[k],'wellness.'+k,col)}</div>
+      `).join('')}
+      <div class="card mb14">
+        <div class="ctitle">🌙 SCORE SOMMEIL /10</div>
+        <div class="slbl" style="margin-bottom:10px">Score global de la nuit</div>
+        ${scoreButtons10(e.sommeil_score,'sommeil_score','var(--green)')}
+        ${e.sommeil_score!=null?`<div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:11px;color:${sommeilScoreC(e.sommeil_score)}">${e.sommeil_score>=8?'✓ Bonne nuit':e.sommeil_score>=5?'⚠ Nuit correcte':'✗ Mauvaise nuit'}</div>`:''}
+      </div>
+      <div class="r2 mb14">
+        <div class="f1"><input placeholder="Hydratation (litres)" value="${e.hydratation||''}" oninput="setVal('hydratation',this.value)"></div>
+        <div class="f1"><input placeholder="Magnésium" value="${e.magnesium||''}" oninput="setVal('magnesium',this.value)"></div>
+      </div>
+
+    </div>
+  </div>
   `;
 
   document.getElementById('form-view').innerHTML = html;
@@ -689,20 +1151,35 @@ function renderHistory(){
     const si=soc.oui&&soc.avant!=null&&soc.apres!=null?soc.apres-soc.avant:null;
     const al=e.allegement||{};
     const aiDiff=al.oui&&al.avant!=null&&al.apres!=null?al.apres-al.avant:null;
+    const p = e.piliers || {};
+    const pillarsDone = [
+      p.respiration_ventrale !== null && p.respiration_ventrale >= 3,
+      p.relachement_allonge === true,
+      p.chaleur === true,
+      p.jogging === true,
+      e.reveil_spasme === false,
+      p.social === true,
+      p.massage === true,
+    ].filter(Boolean).length;
+    const hasInferred = e._inferred && Object.keys(e._inferred).length > 0;
+
     html+=`<div class="hcard" onclick="selectDate('${date}');switchTab('form')">
       <div class="htop">
-        <div class="hdate">${frDate(date).toUpperCase()}</div>
+        <div class="hdate">${frDate(date).toUpperCase()}${hasInferred?' <span class="inferred-badge">inféré</span>':''}</div>
         <div class="hscore" style="background:${sc(parseFloat(a))}">${a}</div>
       </div>
       <div class="badges">
-        ${e.sport&&e.sport.jogging&&e.sport.jogging.duree?`<span class="badge" style="background:#edfbf3;color:var(--green)">🏃 ${e.sport.jogging.duree}min</span>`:''}
-        ${e.sport&&e.sport.marche&&e.sport.marche.duree?`<span class="badge" style="background:#edfbf3;color:var(--green)">🚶 ${e.sport.marche.duree}min</span>`:''}
+        ${e.reveil_spasme===false?`<span class="badge" style="background:#edfbf3;color:var(--green)">🌅 calme</span>`:e.reveil_spasme===true?`<span class="badge" style="background:#fdf0f0;color:var(--red)">🌅 spasme</span>`:''}
+        ${pillarsDone>0?`<span class="badge" style="background:var(--accent-l);color:var(--accent)">🌟 ${pillarsDone}/7</span>`:''}
+        ${p.jogging===true&&p.jogging_duree?`<span class="badge" style="background:#edfbf3;color:var(--green)">🏃 ${p.jogging_duree}min</span>`:e.sport&&e.sport.jogging&&e.sport.jogging.duree?`<span class="badge" style="background:#edfbf3;color:var(--green)">🏃 ${e.sport.jogging.duree}min</span>`:''}
+        ${p.chaleur===true?`<span class="badge" style="background:#fff8ec;color:var(--accent)">🔥${p.chaleur_type?' '+p.chaleur_type:''}</span>`:''}
+        ${p.relachement_allonge===true?`<span class="badge" style="background:#f0faf8;color:var(--teal)">🛋️ relâch.</span>`:''}
+        ${p.massage===true?`<span class="badge" style="background:#f5ead8;color:var(--accent)">💆${p.massage_zone?' '+p.massage_zone:''}</span>`:''}
+        ${p.social===true?`<span class="badge" style="background:#f0faf8;color:var(--teal)">👥${p.social_type?' '+p.social_type:''}</span>`:''}
+        ${e.parole_intensite!=null?`<span class="badge" style="background:#fef9ec;color:var(--orange)">🗣️ ${e.parole_intensite}/5</span>`:''}
         ${e.heures_assis?`<span class="badge" style="background:${assisBg(e.heures_assis)};color:${assisC(e.heures_assis)}">🪑 ${e.heures_assis}h</span>`:''}
-        ${totalDone>0?`<span class="badge" style="background:var(--accent-l);color:var(--accent)">💪 ${totalDone} ex.</span>`:''}
-        ${soc.oui?`<span class="badge" style="background:#f0faf8;color:var(--teal)">👥${soc.duree?' '+soc.duree:''}${soc.qualite!=null?' · '+soc.qualite+'/5':''}${si!==null?(si<0?' ↓'+Math.abs(si):si>0?' ↑'+si:' →'):''}</span>`:''}
-        ${al.oui?`<span class="badge" style="background:${aiDiff!==null&&aiDiff<0?'#edfbf3':'#edfbf3'};color:var(--green)">✓ allégement${aiDiff!==null?(aiDiff<0?' ↓'+Math.abs(aiDiff):aiDiff>0?' ↑'+aiDiff:' →'):''}</span>`:''}
+        ${al.oui?`<span class="badge" style="background:#edfbf3;color:var(--green)">✓ allégement${aiDiff!==null?(aiDiff<0?' ↓'+Math.abs(aiDiff):aiDiff>0?' ↑'+aiDiff:' →'):''}</span>`:''}
         ${e.wellness&&e.wellness.stress!=null?`<span class="badge" style="background:${e.wellness.stress<=2?'#edfbf3':'#fdf0f0'};color:${e.wellness.stress<=2?'var(--green)':'var(--red)'}">stress ${e.wellness.stress}/5</span>`:''}
-        ${e.sommeil_score!=null?`<span class="badge" style="background:${e.sommeil_score>=8?'#edfbf3':e.sommeil_score>=5?'#fef9ec':'#fdf0f0'};color:${sommeilScoreC(e.sommeil_score)}">🌙 ${e.sommeil_score}/10</span>`:''}
       </div>
       ${e.notes?`<div class="hnotes">${e.notes}</div>`:''}
     </div>`;
