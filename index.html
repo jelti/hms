@@ -195,6 +195,11 @@ textarea{resize:vertical;}
 const SK = 'journal_spasmes_MASTER';
 const MIGRATION_VERSION = 1;
 const MIG_KEY = 'journal_spasmes_MIG_VERSION';
+const SLEEP_AUTOIMPORT_KEY = 'journal_spasmes_SLEEP_AUTOIMPORT_V2';
+
+// ── Données de sommeil embarquées (Health Export du 02/04/2026 au 01/07/2026) ──
+// Importées automatiquement une seule fois au premier chargement de l'app.
+const EMBEDDED_SLEEP_DATA = {"2026-04-02":{"duree":"8h10","profond":"43min","eveil":"21min"},"2026-04-03":{"duree":"7h50","profond":"46min","eveil":"6min"},"2026-04-04":{"duree":"7h47","profond":"29min","eveil":"51min"},"2026-04-05":{"duree":"7h32","profond":"40min","eveil":"29min"},"2026-04-06":{"duree":"7h51","profond":"41min","eveil":"11min"},"2026-04-07":{"duree":"6h31","profond":"32min","eveil":"15min"},"2026-04-08":{"duree":"6h24","profond":"50min","eveil":"8min"},"2026-04-09":{"duree":"7h17","profond":"43min","eveil":"10min"},"2026-04-10":{"duree":"7h33","profond":"42min","eveil":"12min"},"2026-04-11":{"duree":"6h57","profond":"39min","eveil":"15min"},"2026-04-12":{"duree":"5h55","profond":"50min","eveil":"1h16"},"2026-04-13":{"duree":"7h04","profond":"40min","eveil":"6min"},"2026-04-14":{"duree":"7h44","profond":"54min","eveil":"12min"},"2026-04-15":{"duree":"7h39","profond":"1h01","eveil":"25min"},"2026-04-16":{"duree":"7h49","profond":"50min","eveil":"11min"},"2026-04-17":{"duree":"8h51","profond":"59min","eveil":"11min"},"2026-04-18":{"duree":"7h32","profond":"57min","eveil":"23min"},"2026-04-19":{"duree":"7h41","profond":"53min","eveil":"19min"},"2026-04-20":{"duree":"8h31","profond":"53min","eveil":"11min"},"2026-04-23":{"duree":"7h43","profond":"35min","eveil":"11min"},"2026-04-24":{"duree":"7h19","profond":"1h09","eveil":"43min"},"2026-04-25":{"duree":"7h41","profond":"39min","eveil":"40min"},"2026-04-26":{"duree":"7h54","profond":"43min","eveil":"32min"},"2026-04-27":{"duree":"5h46","profond":"52min","eveil":"6min"},"2026-04-28":{"duree":"7h23","profond":"19min","eveil":"18min"},"2026-04-29":{"duree":"6h58","profond":"34min","eveil":"14min"},"2026-04-30":{"duree":"7h53","profond":"36min","eveil":"4min"},"2026-05-01":{"duree":"6h38","profond":"41min","eveil":"3min"},"2026-05-09":{"duree":"8h14","profond":"22min","eveil":"16min"},"2026-05-10":{"duree":"6h47","profond":"41min","eveil":"5min"},"2026-05-12":{"duree":"7h46","profond":"1h02","eveil":"29min"},"2026-05-13":{"duree":"7h30","profond":"46min","eveil":"7min"},"2026-05-14":{"duree":"7h38","profond":"47min","eveil":"9min"},"2026-05-15":{"duree":"6h34","profond":"56min","eveil":"2min"},"2026-05-16":{"duree":"8h25","profond":"45min","eveil":"7min"},"2026-05-17":{"duree":"6h02","profond":"34min","eveil":"10min"},"2026-05-18":{"duree":"7h18","profond":"48min","eveil":"10min"},"2026-05-19":{"duree":"7h17","profond":"58min","eveil":"20min"},"2026-05-20":{"duree":"6h21","profond":"39min","eveil":"7min"},"2026-05-21":{"duree":"7h11","profond":"41min","eveil":"5min"},"2026-05-22":{"duree":"7h00","profond":"48min","eveil":"10min"},"2026-05-23":{"duree":"8h09","profond":"40min","eveil":"8min"},"2026-05-24":{"duree":"8h11","profond":"36min","eveil":"16min"},"2026-05-25":{"duree":"6h28","profond":"1h02","eveil":"11min"},"2026-05-26":{"duree":"6h55","profond":"30min","eveil":"20min"},"2026-05-28":{"duree":"6h25","profond":"55min","eveil":"16min"},"2026-05-29":{"duree":"8h18","profond":"50min","eveil":"53min"},"2026-05-30":{"duree":"5h52","profond":"43min","eveil":"7min"},"2026-05-31":{"duree":"6h58","profond":"27min","eveil":"16min"},"2026-06-01":{"duree":"7h10","profond":"1h00","eveil":"22min"},"2026-06-02":{"duree":"7h32","profond":"36min","eveil":"10min"},"2026-06-03":{"duree":"5h35","profond":"55min","eveil":"4min"},"2026-06-04":{"duree":"6h45","profond":"57min","eveil":"5min"},"2026-06-05":{"duree":"7h33","profond":"1h00","eveil":"9min"},"2026-06-06":{"duree":"7h07","profond":"48min","eveil":"8min"},"2026-06-07":{"duree":"6h51","profond":"53min","eveil":"6min"},"2026-06-09":{"duree":"7h47","profond":"49min","eveil":"15min"},"2026-06-10":{"duree":"4h22","profond":"35min","eveil":"1min"},"2026-06-11":{"duree":"7h51","profond":"1h16","eveil":"9min"},"2026-06-12":{"duree":"7h28","profond":"35min","eveil":"11min"},"2026-06-13":{"duree":"5h35","profond":"41min","eveil":"13min"},"2026-06-14":{"duree":"6h43","profond":"31min","eveil":"31min"},"2026-06-15":{"duree":"7h10","profond":"58min","eveil":"5min"},"2026-06-16":{"duree":"7h52","profond":"27min","eveil":"10min"},"2026-06-17":{"duree":"5h49","profond":"49min","eveil":"19min"},"2026-06-18":{"duree":"5h33","profond":"59min","eveil":"7min"},"2026-06-20":{"duree":"7h37","profond":"1h10","eveil":"8min"},"2026-06-21":{"duree":"7h49","profond":"45min","eveil":"13min"},"2026-06-22":{"duree":"6h43","profond":"38min","eveil":"18min"},"2026-06-23":{"duree":"7h12","profond":"13min","eveil":"8min"},"2026-06-24":{"duree":"5h56","profond":"36min","eveil":"19min"},"2026-06-25":{"duree":"6h04","profond":"29min","eveil":"1h14"},"2026-06-26":{"duree":"7h37","profond":"26min","eveil":"14min"},"2026-06-28":{"duree":"5h57","profond":"38min","eveil":"6min"},"2026-06-29":{"duree":"6h40","profond":"33min","eveil":"44min"},"2026-06-30":{"duree":"7h37","profond":"17min","eveil":"8min"}};
 
 // ── Micro-gestes (visibles en haut, réutilisent togEx/exercices) ──
 const MICRO_GESTES = [
@@ -429,6 +434,7 @@ function norm(e){
   if(e.heures_assis===undefined)e.heures_assis='';
   if(!e.exercices)e.exercices=[];
   if(e.sommeil_score===undefined)e.sommeil_score=null;
+  if(e.sommeil_eveil===undefined)e.sommeil_eveil='';
   if(!e.allegement)e.allegement={oui:null,moment:'',facteurs:'',avant:null,apres:null};
   if(e.allegement.avant===undefined)e.allegement.avant=null;
   if(e.allegement.apres===undefined)e.allegement.apres=null;
@@ -458,7 +464,7 @@ function emptyEntry(date){
     posture:{trapeze:null,nuque:null,machoire:null,pommette:null},
     langue:'',respiration:'',exercices:[],social:{oui:null,duree:'',qualite:null,avant:null,apres:null},heures_assis:'',
     wellness:{sommeil_qualite:null,energie:null,stress:null,bienetre:null},
-    sommeil_duree:'',sommeil_profond:'',sommeil_score:null,magnesium:'',hydratation:'',humeur:'',notes:''});
+    sommeil_duree:'',sommeil_profond:'',sommeil_eveil:'',sommeil_score:null,magnesium:'',hydratation:'',humeur:'',notes:''});
   // Une nouvelle entrée n'a pas besoin de migration
   e._migrated_v = MIGRATION_VERSION;
   return e;
@@ -483,6 +489,13 @@ function load(){
     migrationStats = migrateAll();
     save();
     localStorage.setItem(MIG_KEY, String(MIGRATION_VERSION));
+  }
+
+  // Auto-import unique des données de sommeil embarquées (première utilisation seulement)
+  if(!localStorage.getItem(SLEEP_AUTOIMPORT_KEY)){
+    const updated = mergeSleepData(EMBEDDED_SLEEP_DATA);
+    localStorage.setItem(SLEEP_AUTOIMPORT_KEY, '1');
+    if(updated > 0) console.log(`Sommeil : ${updated} nuit(s) importée(s) automatiquement.`);
   }
 }
 function save(){
@@ -706,6 +719,24 @@ function isInferred(e, key){
 }
 function infBadge(){return ' <span class="inferred-badge" title="Valeur inférée du passé">inféré</span>';}
 
+// ── Import sommeil (auto, données embarquées) ──
+function mergeSleepData(sleepByDate){
+  let updated = 0;
+  Object.keys(sleepByDate).forEach(date => {
+    const v = sleepByDate[date];
+    if(!v) return;
+    if(!entries[date]) entries[date] = emptyEntry(date);
+    const e = entries[date];
+    let changed = false;
+    if(v.duree){ e.sommeil_duree = v.duree; changed = true; }
+    if(v.profond){ e.sommeil_profond = v.profond; changed = true; }
+    if(v.eveil){ e.sommeil_eveil = v.eveil; changed = true; }
+    if(changed) updated++;
+  });
+  save();
+  return updated;
+}
+
 // ── Export ──
 function exportJSON(){
   const data=JSON.stringify(entries,null,2);
@@ -903,6 +934,9 @@ function renderPillars(e){
     <div class="r2">
       <div class="f1"><input placeholder="Durée sommeil" value="${e.sommeil_duree||''}" oninput="setVal('sommeil_duree',this.value)"></div>
       <div class="f1"><input placeholder="Sommeil profond" value="${e.sommeil_profond||''}" oninput="setVal('sommeil_profond',this.value)"></div>
+    </div>
+    <div class="r2">
+      <div class="f1"><input placeholder="Durée d'éveil pendant la nuit" value="${e.sommeil_eveil||''}" oninput="setVal('sommeil_eveil',this.value)"></div>
     </div>
   </div>
 
@@ -1177,6 +1211,7 @@ function renderHistory(){
         ${p.massage===true?`<span class="badge" style="background:#f5ead8;color:var(--accent)">💆${p.massage_zone?' '+p.massage_zone:''}</span>`:''}
         ${p.social===true?`<span class="badge" style="background:#f0faf8;color:var(--teal)">👥${p.social_type?' '+p.social_type:''}</span>`:''}
         ${e.parole_intensite!=null?`<span class="badge" style="background:#fef9ec;color:var(--orange)">🗣️ ${e.parole_intensite}/5</span>`:''}
+        ${e.sommeil_eveil?`<span class="badge" style="background:#f0faf8;color:var(--teal)">🌙⏱ ${e.sommeil_eveil}</span>`:''}
         ${e.heures_assis?`<span class="badge" style="background:${assisBg(e.heures_assis)};color:${assisC(e.heures_assis)}">🪑 ${e.heures_assis}h</span>`:''}
         ${al.oui?`<span class="badge" style="background:#edfbf3;color:var(--green)">✓ allégement${aiDiff!==null?(aiDiff<0?' ↓'+Math.abs(aiDiff):aiDiff>0?' ↑'+aiDiff:' →'):''}</span>`:''}
         ${e.wellness&&e.wellness.stress!=null?`<span class="badge" style="background:${e.wellness.stress<=2?'#edfbf3':'#fdf0f0'};color:${e.wellness.stress<=2?'var(--green)':'var(--red)'}">stress ${e.wellness.stress}/5</span>`:''}
